@@ -1,0 +1,883 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title data-i18n="meta_title">Apex Engine 顶峰引擎 - 五套交易系统 · 源码交付 / 私有化部署</title>
+
+  <!-- SEO -->
+  <meta name="description" data-i18n="meta_desc" content="Apex Engine 顶峰引擎：面向海外华人的五套交易系统——外汇微盘、交易所综合系统、旗舰综合、机构席位、授权储蓄。100% 源码交付与私有化部署，ops console / 风控参数 / 做市工具可配置，公开价详询。">
+  <meta name="keywords" content="五套交易系统,外汇微盘,交易所综合系统,旗舰综合,机构席位,授权储蓄,源码交付,私有化部署,ops console,做市工具">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#000000">
+  <link rel="canonical" href="https://apexenginesoft.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Apex Engine - 五套交易系统 · 源码交付 / 私有化">
+  <meta property="og:description" content="外汇微盘 · 交易所综合系统 · 旗舰综合 · 机构席位 · 授权储蓄 · 公开价详询">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Apex Engine 顶峰引擎",
+    "foundingDate": "2018",
+    "contactPoint": { "@type": "ContactPoint", "contactType": "sales", "telegram": "@ApexEngine_ts" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "代码里有没有暗门？", "acceptedAnswer": { "@type": "Answer", "text": "没有。全部部署在你的独立服务器，可全量抓包审计。" } },
+      { "@type": "Question", "name": "新盘深度如何配置？", "acceptedAnswer": { "@type": "Answer", "text": "可对接主流公开行情深度；做市与风控参数可配置（以合同为准）。" } },
+      { "@type": "Question", "name": "技术方失联能自己接管吗？", "acceptedAnswer": { "@type": "Answer", "text": "交付全套部署脚本与文档，普通后端即可接手。" } }
+    ]
+  }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+      background: #000;
+      color: #ffffff;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.015em;
+      line-height: 1.5;
+    }
+
+    a { color: #ffffff; text-decoration: none; }
+    a:hover { text-decoration: none; color: #c9a961; }
+
+    /* 背景视频 */
+    .bg-video-container {
+      position: fixed; inset: 0;
+      z-index: -30; overflow: hidden;
+      pointer-events: none;
+    }
+    .bg-video-container video {
+      width: 100%; height: 100%; object-fit: cover;
+      object-position: center center;
+      filter: brightness(0.35) saturate(0.6);
+    }
+    .bg-veil {
+      position: fixed; inset: 0; z-index: -20; pointer-events: none;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.6) 100%);
+    }
+
+    /* 导航 */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      padding: 18px 24px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(0,0,0,0.4);
+      transition: background 0.3s ease;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .brand { color: #ffffff; font-weight: 600; font-size: 17px; letter-spacing: -0.02em; }
+    .brand em { color: #c9a961; font-style: normal; }
+    .nav-links { display: flex; gap: 22px; font-size: 13px; color: #e8e8f0; }
+    .nav-links a { color: #e8e8f0; }
+    .nav-links a:hover { color: #ffffff; text-decoration: none; }
+    .btn {
+      display: inline-block;
+      background: #ffffff; color: #000;
+      padding: 10px 24px; border-radius: 980px;
+      font-size: 14px; font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      opacity: 1;
+      background: #fff;
+      box-shadow: 0 0 40px rgba(245,245,247,0.3);
+      transform: scale(1.03);
+    }
+    .link { font-size: 15px; }
+    .link::after { content: " ›"; }
+
+    /* 汉堡菜单 */
+    .hamburger {
+      display: none;
+      background: none; border: none; color: #ffffff;
+      font-size: 20px; cursor: pointer; padding: 6px 10px;
+      line-height: 1;
+    }
+    .lang-switch {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 980px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 13px; color: #e8e8f0; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-switch:hover { background: rgba(255,255,255,0.15); }
+    .mobile-menu {
+      position: fixed; top: 0; right: -100%;
+      width: 280px; height: 100vh; z-index: 100;
+      background: linear-gradient(135deg, rgba(40,40,45,0.85) 0%, rgba(20,20,25,0.9) 100%);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-left: 1px solid rgba(255,255,255,0.1);
+      padding: 80px 32px 32px;
+      transition: right 0.3s ease;
+      display: flex; flex-direction: column; gap: 20px;
+      box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+    }
+    .mobile-menu.open { right: 0; }
+    .mobile-menu a {
+      color: #ffffff; font-size: 17px; font-weight: 500;
+      text-decoration: none; padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .mobile-menu a:hover { color: #c9a961; }
+    .mobile-menu .close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: none; color: #e8e8f0;
+      font-size: 28px; cursor: pointer; line-height: 1;
+    }
+    .menu-backdrop {
+      display: none;
+      position: fixed; inset: 0; z-index: 90;
+      background: rgba(0,0,0,0.5);
+    }
+    .menu-backdrop.open { display: block; }
+
+    /* 布局 */
+    section { padding: 120px 48px; }
+    .container { max-width: 980px; margin: 0 auto; }
+    .center { text-align: center; }
+
+    h1 {
+      font-size: clamp(40px, 8vw, 80px);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      background: linear-gradient(180deg, #ffffff 0%, #d8d8dc 50%, #a0a0a8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 20px rgba(255,255,255,0.15));
+    }
+    h2 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: filter 0.4s ease;
+    }
+    h2:hover {
+      filter: drop-shadow(0 0 30px rgba(201,169,97,0.4));
+    }
+    .lede {
+      font-size: clamp(19px, 2.5vw, 28px);
+      color: #c0c0c8;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+    .big-number {
+      font-size: clamp(64px, 12vw, 140px);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      background: linear-gradient(180deg, #ffffff 0%, #c9b98a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 30px rgba(201,169,97,0.3));
+      transition: transform 0.4s ease, filter 0.4s ease;
+    }
+    .big-number:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 4px 40px rgba(201,169,97,0.5));
+    }
+
+    .glass {
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+      border-radius: 18px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 8px 32px rgba(0,0,0,0.3);
+      transition: all 0.4s ease;
+    }
+    .glass:hover {
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%);
+      transform: translateY(-2px);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.15),
+        0 16px 48px rgba(0,0,0,0.4),
+        0 0 40px rgba(201,169,97,0.08);
+    }
+
+    footer {
+      padding: 40px 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 12px; color: #6a6a75;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      section { padding: 100px 24px; }
+      .nav-links { display: none; }
+      .sys-grid { grid-template-columns: 1fr 1fr !important; }
+      .architecture-grid { grid-template-columns: 1fr !important; }
+      .matrix-grid { grid-template-columns: 1fr !important; }
+      .timeline-grid { grid-template-columns: 1fr !important; }
+      .hamburger { display: block; }
+      h1 { letter-spacing: -0.02em; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 背景视频 -->
+  <div class="bg-video-container">
+    <video id="bg-video" autoplay loop muted playsinline preload="auto" webkit-playsinline="true" x5-video-player-type="h5" poster="poster.jpg">
+      <source src="background.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="bg-veil"></div>
+
+  <!-- 导航 -->
+  <nav>
+    <a href="#" class="brand">Apex<em>Engine</em></a>
+    <div class="nav-links">
+      <a href="#about-zone" data-i18n="nav_about">关于</a>
+      <a href="#demo-zone" data-i18n="nav_systems">系统</a>
+      <a href="#architecture-zone" data-i18n="nav_arch">架构</a>
+      <a href="#matrix-zone" data-i18n="nav_matrix">能力模块</a>
+      <a href="#timeline-zone" data-i18n="nav_delivery">交付</a>
+      <a href="#faq-zone">FAQ</a>
+      <a href="articles/index.html" data-i18n="nav_articles">技术文章</a>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <div class="lang-switch" onclick="toggleLang()">
+        <span>🌐</span>
+        <span id="current-lang">中文</span>
+      </div>
+      <a href="https://t.me/ApexEngine_ts" target="_blank" class="btn" data-i18n="nav_cta">咨询</a>
+      <button class="hamburger" onclick="openMenu()">☰</button>
+    </div>
+  </nav>
+
+  <!-- 语言选择 -->
+  <div id="lang-dropdown" style="display: none; position: fixed; top: 64px; right: 24px; z-index: 110; background: linear-gradient(135deg, rgba(40,40,45,0.9) 0%, rgba(20,20,25,0.95) 100%); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 12px; min-width: 140px;">
+    <div onclick="setLang('zh')" style="padding: 10px 16px; cursor: pointer; border-radius: 8px; font-size: 14px; color: #e8e8f0;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='none'">中文</div>
+    <div onclick="setLang('en')" style="padding: 10px 16px; cursor: pointer; border-radius: 8px; font-size: 14px; color: #e8e8f0;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='none'">English</div>
+    <div onclick="setLang('ja')" style="padding: 10px 16px; cursor: pointer; border-radius: 8px; font-size: 14px; color: #e8e8f0;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='none'">日本語</div>
+    <div onclick="setLang('de')" style="padding: 10px 16px; cursor: pointer; border-radius: 8px; font-size: 14px; color: #e8e8f0;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='none'">Deutsch</div>
+  </div>
+
+  <!-- 遮罩 -->
+  <div class="menu-backdrop" id="menu-backdrop" onclick="closeMenu()"></div>
+
+  <!-- 移动端抽屉菜单 -->
+  <div id="mobile-menu" class="mobile-menu">
+    <button class="close" onclick="closeMenu()">×</button>
+    <a href="#about-zone" onclick="closeMenu()" data-i18n="nav_about">关于</a>
+    <a href="#demo-zone" onclick="closeMenu()" data-i18n="nav_systems">系统</a>
+    <a href="#architecture-zone" onclick="closeMenu()" data-i18n="nav_arch">架构</a>
+    <a href="#matrix-zone" onclick="closeMenu()" data-i18n="nav_matrix">能力模块</a>
+    <a href="#timeline-zone" onclick="closeMenu()" data-i18n="nav_delivery">交付</a>
+    <a href="#faq-zone" onclick="closeMenu()" data-i18n="nav_faq">FAQ</a>
+    <a href="articles/index.html" data-i18n="nav_articles">技术文章</a>
+    <a href="https://t.me/ApexEngine_ts" target="_blank" data-i18n="nav_cta">咨询</a>
+  </div>
+
+  <!-- HERO -->
+  <section style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 30vh; padding-bottom: 40px;">
+    <div class="container center">
+      <h1 data-i18n="hero_title1">金融交易系统。<br><span style="background: linear-gradient(180deg,#fff,#c9b98a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"><span data-i18n="hero_title2">48 小时上线。</span></h1>
+      <p class="lede" style="margin-top: 24px;"><span data-i18n="hero_sub">五套交易系统 · 源码交付 / 私有化部署。公开价详询。</span></p>
+      <div style="margin-top: 32px; display: flex; gap: 32px; justify-content: center;">
+        <a href="#systems" class="link" data-i18n="hero_learn">了解系统</a>
+        <a href="https://t.me/ApexEngine_ts" target="_blank" class="link" data-i18n="hero_consult">详询</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 关于 / 机构底蕴 -->
+  <section id="about-zone">
+    <div class="container center">
+      <h2><span data-i18n="about_title">穿越三轮牛熊。<br>机构底座。</span></h2>
+      <div class="glass" style="margin-top: 48px; padding: 56px 48px;">
+        <p class="lede" data-i18n="about_desc">
+          专注交易系统私有化交付：撮合、钱包与风控模块可按场景配置。<br>
+          源码物理交付，部署与私钥由客户自持。
+        </p>
+        <div style="margin-top: 48px; display: flex; justify-content: center; gap: 48px;">
+          <div>
+            <div style="font-size: 32px; font-weight: 600; color: #c9a961;">5</div>
+            <div style="font-size: 13px; color: #e8e8f0; margin-top: 4px;" data-i18n="stat1">套系统选型</div>
+          </div>
+          <div>
+            <div style="font-size: 32px; font-weight: 600;">100%</div>
+            <div style="font-size: 13px; color: #e8e8f0; margin-top: 4px;" data-i18n="stat2">源码交付</div>
+          </div>
+          <div>
+            <div style="font-size: 32px; font-weight: 600; color: #c9a961;">详询</div>
+            <div style="font-size: 13px; color: #e8e8f0; margin-top: 4px;" data-i18n="stat3">方案与报价</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 五套系统 -->
+  <section id="demo-zone">
+    <div class="container center">
+      <h2 data-i18n="systems_title">五套交易系统。</h2>
+      <p class="lede" style="margin-top: 16px;" data-i18n="systems_sub">按业务场景选型。</p>
+
+      <!-- Desktop: 5 columns; mobile (≤768px) falls back to 2-col via .sys-grid media query -->
+      <div class="sys-grid" style="margin-top: 64px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
+        <button data-index="0" class="sys-tab glass" onclick="switchSys(0, this)" style="padding: 24px; text-align: left; background: rgba(255,255,255,0.08); cursor: pointer; border: none; border-radius: 16px;">
+          <div style="font-size: 15px; font-weight: 600; color: #ffffff;" data-i18n="sys0_t">外汇微盘</div>
+          <div style="font-size: 12px; color: #e8e8f0; margin-top: 4px;" data-i18n="sys0_d">短周期外汇</div>
+        </button>
+        <button data-index="1" class="sys-tab glass" onclick="switchSys(1, this)" style="padding: 24px; text-align: left; background: rgba(255,255,255,0.03); cursor: pointer; border: none; opacity: 0.7; border-radius: 16px;">
+          <div style="font-size: 15px; font-weight: 600; color: #ffffff;" data-i18n="sys1_t">交易所综合系统</div>
+          <div style="font-size: 12px; color: #e8e8f0; margin-top: 4px;" data-i18n="sys1_d">综合多业务</div>
+        </button>
+        <button data-index="2" class="sys-tab glass" onclick="switchSys(2, this)" style="padding: 24px; text-align: left; background: rgba(255,255,255,0.03); cursor: pointer; border: none; opacity: 0.7; border-radius: 16px;">
+          <div style="font-size: 15px; font-weight: 600; color: #ffffff;" data-i18n="sys2_t">旗舰综合</div>
+          <div style="font-size: 12px; color: #e8e8f0; margin-top: 4px;" data-i18n="sys2_d">同能力新 UI</div>
+        </button>
+        <button data-index="3" class="sys-tab glass" onclick="switchSys(3, this)" style="padding: 24px; text-align: left; background: rgba(255,255,255,0.03); cursor: pointer; border: none; opacity: 0.7; border-radius: 16px;">
+          <div style="font-size: 15px; font-weight: 600; color: #ffffff;" data-i18n="sys3_t">机构席位</div>
+          <div style="font-size: 12px; color: #e8e8f0; margin-top: 4px;" data-i18n="sys3_d">多人分权后台</div>
+        </button>
+        <button data-index="4" class="sys-tab glass" onclick="switchSys(4, this)" style="padding: 24px; text-align: left; background: rgba(255,255,255,0.03); cursor: pointer; border: none; opacity: 0.7; border-radius: 16px;">
+          <div style="font-size: 15px; font-weight: 600; color: #ffffff;" data-i18n="sys4_t">授权储蓄</div>
+          <div style="font-size: 12px; color: #e8e8f0; margin-top: 4px;" data-i18n="sys4_d">储蓄类软件模块</div>
+        </button>
+      </div>
+
+      <div class="glass" style="border-radius: 16px; padding: 40px; margin-top: 16px;">
+        <p id="sys-desc" style="font-size: 17px; color: #ffffff; line-height: 1.7; text-align: left;">
+          短周期外汇/黄金类交易软件。适合想先上线、玩法简单的团队。前台+后台+源码/部署（按合同）。详询。
+        </p>
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap;">
+          <div style="font-size: 13px; color: #e8e8f0;" data-i18n="sys_demo_hint">
+            公开价详询 · 演示请联系 Telegram 领取
+          </div>
+          <div style="display: flex; gap: 24px; font-size: 14px;">
+            <a href="https://t.me/ApexEngine_ts" target="_blank" class="link" data-i18n="sys_demo">看演示 / 详询</a>
+            <a href="https://t.me/ApexEngine_ts" target="_blank" class="link" data-i18n="sys_login">联系 Telegram</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 全栈技术底座 -->
+  <section id="architecture-zone">
+    <div class="container center">
+      <h2 data-i18n="arch_title">全栈技术底座。</h2>
+      <p class="lede" style="margin-top: 16px;" data-i18n="arch_sub">C++/Go 撮合引擎 · MySQL + Redis · 多链 RPC。</p>
+
+      <div class="architecture-grid" style="margin-top: 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left;">
+        <div class="glass" style="border-radius: 16px; padding: 44px;">
+          <div style="font-size: 16px; font-weight: 600;" data-i18n="arch0_t">前端交互</div>
+          <div style="font-size: 14px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="arch0_d">HTML5 / Vue.js，毫秒级 K 线渲染，完美适配移动端与 PC。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 44px;">
+          <div style="font-size: 16px; font-weight: 600;" data-i18n="arch1_t">撮合引擎</div>
+          <div style="font-size: 14px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="arch1_d">C++ / Go 内存级集群，单节点 10,000+ TPS，微秒级清算。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 44px;">
+          <div style="font-size: 16px; font-weight: 600;" data-i18n="arch2_t">存储缓存</div>
+          <div style="font-size: 14px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="arch2_d">MySQL 8.0 主从热备，Redis Cluster 分布式缓存。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 44px;">
+          <div style="font-size: 16px; font-weight: 600;" data-i18n="arch3_t">链上安全</div>
+          <div style="font-size: 14px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="arch3_d">TRC20 / ERC20 / BSC 多链节点，Docker 物理隔离，SSL + DDoS 高防。</div>
+        </div>
+      </div>
+
+      <!-- 资金直通冷钱包 -->
+      <div class="glass" style="margin-top: 24px; border-radius: 20px; padding: 48px; text-align: left;">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 24px;" data-i18n="fund_title">资金直通冷钱包</h3>
+        <div style="display: grid; gap: 20px;">
+          <div style="display: flex; gap: 16px;">
+            <span style="color: #c9a961; font-weight: 600; min-width: 24px;">01</span>
+            <p style="font-size: 15px; color: #e8e8f0; line-height: 1.6;" data-i18n="fund0">链上多节点实时扫块，散户入金生成独立充值地址，5+ 主链毫秒确认。</p>
+          </div>
+          <div style="display: flex; gap: 16px;">
+            <span style="color: #c9a961; font-weight: 600; min-width: 24px;">02</span>
+            <p style="font-size: 15px; color: #e8e8f0; line-height: 1.6;" data-i18n="fund1">大额资产自动归集至你专属私钥冷钱包，技术团队零触碰权限。</p>
+          </div>
+          <div style="display: flex; gap: 16px;">
+            <span style="color: #c9a961; font-weight: 600; min-width: 24px;">03</span>
+            <p style="font-size: 15px; color: #e8e8f0; line-height: 1.6;" data-i18n="fund2">资金进入内存账本撮合，毫秒级风控与滑点干预。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 能力模块 / 运维后台 -->
+  <section id="matrix-zone">
+    <div class="container center">
+      <h2 data-i18n="matrix_title">运维后台。</h2>
+      <p class="lede" style="margin-top: 16px;" data-i18n="matrix_sub">毫秒级运维响应。</p>
+
+      <div class="matrix-grid" style="margin-top: 64px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: left;">
+        <div class="glass" style="border-radius: 16px; padding: 40px;">
+          <div style="font-size: 15px; font-weight: 600;" data-i18n="mat0_t">风控参数</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 6px;" data-i18n="mat0_d">ops console 可配置风控阈值与参数策略（以合同为准）。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 40px;">
+          <div style="font-size: 15px; font-weight: 600;" data-i18n="mat1_t">做市工具</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 6px;" data-i18n="mat1_d">可对接主流公开行情深度；做市与风控参数可配置（以合同为准）。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 40px;">
+          <div style="font-size: 15px; font-weight: 600;" data-i18n="mat2_t">行情模块</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 6px;" data-i18n="mat2_d">行情源与深度策略可配置，适配多模块交易场景。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 40px;">
+          <div style="font-size: 15px; font-weight: 600;" data-i18n="mat3_t">深度策略</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 6px;" data-i18n="mat3_d">订单簿深度与挂单策略可配置，便于冷启动与运维调优。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 40px;">
+          <div style="font-size: 15px; font-weight: 600;" data-i18n="mat4_t">穿透返佣</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 6px;" data-i18n="mat4_d">团队、公会、代理分层分润，秒级结算。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 40px;">
+          <div style="font-size: 15px; font-weight: 600;" data-i18n="mat5_t">熔断防护</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 6px;" data-i18n="mat5_d">极端行情自动拦截，隔绝穿仓风险。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 交付时间 -->
+  <section id="timeline-zone">
+    <div class="container center">
+      <h2 data-i18n="delivery_title">48 小时极速交付。</h2>
+      <p class="lede" style="margin-top: 16px;" data-i18n="delivery_sub">逾期未跑通，全额退款。</p>
+
+      <div class="timeline-grid" style="margin-top: 64px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; text-align: left;">
+        <div class="glass" style="padding: 36px;">
+          <div style="font-size: 12px; color: #c9a961; font-weight: 500;">0–12H</div>
+          <div style="font-size: 16px; font-weight: 600; margin-top: 10px;" data-i18n="t0_t">服务器拉起</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="t0_d">Docker 集群部署，高防与灾备配置。</div>
+        </div>
+        <div class="glass" style="padding: 36px;">
+          <div style="font-size: 12px; color: #c9a961; font-weight: 500;">12–24H</div>
+          <div style="font-size: 16px; font-weight: 600; margin-top: 10px;" data-i18n="t1_t">主链连通</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="t1_d">冷钱包注入，测试币充提全链路回执。</div>
+        </div>
+        <div class="glass" style="padding: 36px;">
+          <div style="font-size: 12px; color: #c9a961; font-weight: 500;">24–36H</div>
+          <div style="font-size: 16px; font-weight: 600; margin-top: 10px;" data-i18n="t2_t">做市调优</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="t2_d">真实行情铺单，校准滑点与风控参数。</div>
+        </div>
+        <div class="glass" style="padding: 36px;">
+          <div style="font-size: 12px; color: #c9a961; font-weight: 500;">36–48H</div>
+          <div style="font-size: 16px; font-weight: 600; margin-top: 10px;" data-i18n="t3_t">验收移交</div>
+          <div style="font-size: 13px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="t3_d">现场验盘，全套源码与文档物理交付。</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Apex 承诺 -->
+  <section>
+    <div class="container center">
+      <h2 data-i18n="promise_title">Apex 在此承诺。</h2>
+      <p class="lede" style="margin-top: 16px;" data-i18n="promise_sub">五件事，写在前面。</p>
+
+      <div class="glass" style="margin-top: 48px; padding: 56px; text-align: left; max-width: 680px; margin-left: auto; margin-right: auto;">
+        <div style="display: grid; gap: 20px; font-size: 15px; color: #e8e8f0; line-height: 1.6;">
+          <p data-i18n="p0"><span style="color: #ffffff; font-weight: 500;">7×24 技术在线</span> · 15 分钟内响应介入</p>
+          <p data-i18n="p1"><span style="color: #ffffff; font-weight: 500;">中介担保</span> · 合同约定里程碑验收与付款</p>
+          <p data-i18n="p2"><span style="color: #ffffff; font-weight: 500;">100% 纯源码</span> · 支持全量抓包审计</p>
+          <p data-i18n="p3"><span style="color: #ffffff; font-weight: 500;">48H 军令状</span> · 逾期未跑通全额退款</p>
+          <p data-i18n="p4"><span style="color: #ffffff; font-weight: 500;">链上验真</span> · 现场单笔 100 USDT 测试</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq-zone">
+    <div class="container center" style="max-width: 680px;">
+      <h2 data-i18n="faq_title">常见问题。</h2>
+      <p class="lede" style="margin-top: 16px;" data-i18n="faq_sub">真实问题，直接回答。</p>
+
+      <div style="margin-top: 48px; text-align: left; display: grid; gap: 16px;">
+        <div class="glass" style="border-radius: 16px; padding: 40px;">
+          <div style="font-size: 17px; font-weight: 600;" data-i18n="faq0_q">代码里有暗门吗？</div>
+          <div style="font-size: 14px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="faq0_a">绝对没有。全部数据库、撮合引擎、钱包模块部署在你的独立服务器，你可以安排技术团队全量抓包审计与反编译。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 40px;">
+          <div style="font-size: 17px; font-weight: 600;" data-i18n="faq1_q">新盘深度与做市怎么配？</div>
+          <div style="font-size: 14px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="faq1_a">可对接主流公开行情深度；做市工具与风控参数均可配置，具体范围以合同为准。演示请联系 Telegram 领取。</div>
+        </div>
+        <div class="glass" style="border-radius: 16px; padding: 40px;">
+          <div style="font-size: 17px; font-weight: 600;" data-i18n="faq2_q">你们失联后能自己接管吗？</div>
+          <div style="font-size: 14px; color: #e8e8f0; margin-top: 8px; line-height: 1.6;" data-i18n="faq2_a">交付一键部署脚本、Dockerfile、数据库字典与运维文档，普通后端工程师即可无缝接手。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section>
+    <div class="container center">
+      <h2 data-i18n="cta_title">准备好上线了？</h2>
+      <p class="lede" style="margin-top: 16px;" data-i18n="cta_sub">48 小时后，你的交易所正式运营。</p>
+      <div style="margin-top: 40px;">
+        <a href="https://t.me/ApexEngine_ts" target="_blank" class="btn" data-i18n="cta_btn">详询</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p style="max-width: 720px; margin: 0 auto 24px; line-height: 1.8; font-size: 11px; color: #6a6a75;">
+      <span data-i18n="footer_disclaimer">Apex Engine（顶峰引擎）仅提供中立的区块链软件技术研发与私有化源码交付服务，不参与客户实际运营，不提供代客理财与资金托管。买方须自行遵守所在司法管辖区法律法规。加密资产交易风险极高，技术方不承担任何间接损失。</span>
+    </p>
+    <div>© Apex Engine · <a href="https://t.me/ApexEngine_ts" target="_blank">@ApexEngine_ts</a></div>
+    <div style="margin-top: 8px; font-size: 10px; color: #48484d;">v4.0.0-preview · Multilingual</div>
+  </footer>
+
+  <script>
+    // ============ 多语言字典 ============
+    const i18n = {
+      zh: {
+        nav_about: '关于', nav_systems: '系统', nav_arch: '架构', nav_matrix: '能力模块',
+        nav_delivery: '交付', nav_faq: 'FAQ', nav_articles: '技术文章',
+        nav_cta: '咨询',
+        hero_title1: '金融交易系统。', hero_title2: '48 小时上线。',
+        hero_sub: '五套交易系统 · 源码交付 / 私有化部署。公开价详询。',
+        hero_learn: '了解系统', hero_consult: '详询',
+        about_title: '穿越三轮牛熊。机构底座。',
+        about_desc: '专注交易系统私有化交付：撮合、钱包与风控模块可按场景配置。源码物理交付，部署与私钥由客户自持。',
+        stat1: '套系统选型', stat2: '源码交付', stat3: '方案与报价',
+        systems_title: '五套交易系统。', systems_sub: '按业务场景选型。',
+        sys0_t: '外汇微盘', sys0_d: '短周期外汇',
+        sys1_t: '交易所综合系统', sys1_d: '综合多业务',
+        sys2_t: '旗舰综合', sys2_d: '同能力新 UI',
+        sys3_t: '机构席位', sys3_d: '多人分权后台',
+        sys4_t: '授权储蓄', sys4_d: '储蓄类软件模块',
+        sys_desc0: '短周期外汇/黄金类交易软件。适合想先上线、玩法简单的团队。前台+后台+源码/部署（按合同）。详询。',
+        sys_desc1: '一套里可开短周期（秒合约）、永续、现货等常用交易所业务——不是「纯现货」。适合要一个后台多业务的团队。前台+后台+源码/部署（按合同）。详询。',
+        sys_desc2: '和「交易所综合系统」同一套业务能力，主要是界面和交互更新。适合更在意页面观感的团队。别理解成另一套更深交付。详询。',
+        sys_desc3: '多人分角色后台（运营/风控/客服分开）。适合人多、要长期私有化运维的团队。自己掌控系统和数据。详询。',
+        sys_desc4: '储蓄/理财类产品软件模块。规则与产品参数可配置；源码或私有化交付（按合同）。仅软件技术交付，资金与收益由客户自行运营。详询。',
+        sys_admin: '详询', sys_pwd: 'Demo',
+        sys_demo: '看演示 / 详询', sys_login: '联系 Telegram',
+        sys_demo_hint: '公开价详询 · 演示请联系 Telegram 领取',
+        arch_title: '全栈技术底座。', arch_sub: 'C++/Go 撮合引擎 · MySQL + Redis · 多链 RPC。',
+        arch0_t: '前端交互', arch0_d: 'HTML5 / Vue.js，毫秒级 K 线渲染，完美适配移动端与 PC。',
+        arch1_t: '撮合引擎', arch1_d: 'C++ / Go 内存级集群，单节点 10,000+ TPS，微秒级清算。',
+        arch2_t: '存储缓存', arch2_d: 'MySQL 8.0 主从热备，Redis Cluster 分布式缓存。',
+        arch3_t: '链上安全', arch3_d: 'TRC20 / ERC20 / BSC 多链节点，Docker 物理隔离，SSL + DDoS 高防。',
+        fund_title: '资金直通冷钱包',
+        fund0: '链上多节点实时扫块，散户入金生成独立充值地址，5+ 主链毫秒确认。',
+        fund1: '大额资产自动归集至你专属私钥冷钱包，技术团队零触碰权限。',
+        fund2: '资金进入内存账本撮合，毫秒级风控与滑点干预。',
+        matrix_title: '运维后台。', matrix_sub: '毫秒级运维响应。',
+        mat0_t: '风控参数', mat0_d: 'ops console 可配置风控阈值与参数策略（以合同为准）。',
+        mat1_t: '做市工具', mat1_d: '可对接主流公开行情深度；做市与风控参数可配置（以合同为准）。',
+        mat2_t: '行情模块', mat2_d: '行情源与深度策略可配置，适配多模块交易场景。',
+        mat3_t: '深度策略', mat3_d: '订单簿深度与挂单策略可配置，便于冷启动与运维调优。',
+        mat4_t: '穿透返佣', mat4_d: '团队、公会、代理分层分润，秒级结算。',
+        mat5_t: '熔断防护', mat5_d: '极端行情自动拦截，隔绝穿仓风险。',
+        delivery_title: '48 小时极速交付。', delivery_sub: '逾期未跑通，全额退款。',
+        t0: '0–12H', t0_t: '服务器拉起', t0_d: 'Docker 集群部署，高防与灾备配置。',
+        t1: '12–24H', t1_t: '主链连通', t1_d: '冷钱包注入，测试币充提全链路回执。',
+        t2: '24–36H', t2_t: '做市调优', t2_d: '真实行情铺单，校准滑点与风控参数。',
+        t3: '36–48H', t3_t: '验收移交', t3_d: '现场验盘，全套源码与文档物理交付。',
+        promise_title: 'Apex 在此承诺。', promise_sub: '五件事，写在前面。',
+        p0: '<span style="color:#ffffff;font-weight:500;">7×24 技术在线</span> · 15 分钟内响应介入',
+        p1: '<span style="color:#ffffff;font-weight:500;">中介担保</span> · 合同约定里程碑验收与付款',
+        p2: '<span style="color:#ffffff;font-weight:500;">100% 纯源码</span> · 支持全量抓包审计',
+        p3: '<span style="color:#ffffff;font-weight:500;">48H 军令状</span> · 逾期未跑通全额退款',
+        p4: '<span style="color:#ffffff;font-weight:500;">链上验真</span> · 现场单笔 100 USDT 测试',
+        faq_title: '常见问题。', faq_sub: '真实问题，直接回答。',
+        faq0_q: '代码里有暗门吗？', faq0_a: '绝对没有。全部数据库、撮合引擎、钱包模块部署在你的独立服务器，你可以安排技术团队全量抓包审计与反编译。',
+        faq1_q: '新盘深度与做市怎么配？', faq1_a: '可对接主流公开行情深度；做市工具与风控参数均可配置，具体范围以合同为准。演示请联系 Telegram 领取。',
+        faq2_q: '你们失联后能自己接管吗？', faq2_a: '交付一键部署脚本、Dockerfile、数据库字典与运维文档，普通后端工程师即可无缝接手。',
+        cta_title: '准备好上线了？', cta_sub: '48 小时后，你的交易所正式运营。',
+        cta_btn: '详询',
+        footer_disclaimer: 'Apex Engine（顶峰引擎）仅提供中立的区块链软件技术研发与私有化源码交付服务，不参与客户实际运营，不提供代客理财与资金托管。买方须自行遵守所在司法管辖区法律法规。加密资产交易风险极高，技术方不承担任何间接损失。',
+        meta_title: 'Apex Engine - 五套交易系统 · 源码交付 / 私有化部署',
+        meta_desc: '面向海外华人：外汇微盘、交易所综合系统、旗舰综合、机构席位、授权储蓄。源码交付与私有化部署，公开价详询。'
+      },
+      en: {
+        nav_about: 'About', nav_systems: 'Systems', nav_arch: 'Architecture', nav_matrix: 'Capability Modules',
+        nav_delivery: 'Delivery', nav_faq: 'FAQ', nav_articles: 'Articles',
+        nav_cta: 'Contact',
+        hero_title1: 'Trading Infrastructure.', hero_title2: 'Live in 48 Hours.',
+        hero_sub: 'Five trading systems · source delivery / private deployment. Price on inquiry.',
+        hero_learn: 'Explore Systems', hero_consult: 'Inquire',
+        about_title: 'Three Market Cycles. Battle-Tested.',
+        about_desc: 'Private trading-system delivery: matching, wallet and risk modules configurable by scenario. Source delivered; deploy keys stay with the client.',
+        stat1: 'System SKUs', stat2: 'Source delivery', stat3: 'Ask for quote',
+        systems_title: 'Five Trading Systems.', systems_sub: 'Choose by business scenario.',
+        sys0_t: 'Forex Short-Cycle', sys0_d: 'Short-cycle FX',
+        sys1_t: 'Exchange Suite', sys1_d: 'Multi-product desk',
+        sys2_t: 'Flagship Suite', sys2_d: 'Same stack, new UI',
+        sys3_t: 'Institutional Desk', sys3_d: 'Multi-role admin',
+        sys4_t: 'Authorized Savings', sys4_d: 'Savings software module',
+        sys_desc0: 'Short-cycle FX/gold trading software. For teams that want to go live fast with a simple product. Frontend + admin + source/deploy (per contract). Inquire.',
+        sys_desc1: 'One stack for short-cycle (binary), perpetuals, and spot—not spot-only. For teams that want multiple products in one admin. Frontend + admin + source/deploy (per contract). Inquire.',
+        sys_desc2: 'Same business capabilities as Exchange Suite—mainly newer UI/UX. For teams that care more about look and feel. Not a deeper product tier. Inquire.',
+        sys_desc3: 'Multi-role admin (ops / risk / support separated). For larger teams that need long-term private ops. You keep control of system and data—no “clone a major exchange” pitch. Inquire.',
+        sys_desc4: 'Savings / wealth-product software module. Rules and product parameters are configurable; source or private deploy (per contract). Software delivery only — funds and returns are operated by the client. Inquire.',
+        sys_admin: 'Inquiry', sys_pwd: 'Demo',
+        sys_demo: 'See demo / Inquire', sys_login: 'Contact Telegram',
+        sys_demo_hint: 'Price on inquiry · Contact Telegram for a demo',
+        arch_title: 'Full-Stack Architecture.', arch_sub: 'C++/Go matching engine · MySQL + Redis · Multi-chain RPC.',
+        arch0_t: 'Frontend', arch0_d: 'HTML5 / Vue.js, millisecond K-line rendering, mobile & PC.',
+        arch1_t: 'Matching Engine', arch1_d: 'C++ / Go in-memory cluster, 10,000+ TPS per node, microsecond order book.',
+        arch2_t: 'Storage', arch2_d: 'MySQL 8.0 master-slave, Redis Cluster, million-ops caching.',
+        arch3_t: 'On-Chain Security', arch3_d: 'TRC20 / ERC20 / BSC nodes, Docker isolation, SSL + DDoS protection.',
+        fund_title: 'Funds Flow to Cold Wallet',
+        fund0: 'Multi-node block scanning, unique deposit address per user, 5+ chains with millisecond confirmations.',
+        fund1: 'Large balances auto-sweep to your hardware cold wallet — zero access by the vendor.',
+        fund2: 'Funds enter in-memory ledger matching with millisecond risk control.',
+        matrix_title: 'Ops Console.', matrix_sub: 'Millisecond visibility across ops.',
+        mat0_t: 'Risk Parameters', mat0_d: 'Configurable risk thresholds and policies via ops console (per contract).',
+        mat1_t: 'Market-Making Tools', mat1_d: 'Can connect to major public market depth; market-making and risk parameters configurable (per contract).',
+        mat2_t: 'Market Data Module', mat2_d: 'Configurable market sources and depth strategies for multi-module trading.',
+        mat3_t: 'Depth Strategy', mat3_d: 'Configurable order-book depth and quoting strategies for launch and ops tuning.',
+        mat4_t: 'Referral System', mat4_d: 'Multi-tier team/agent commission, instant settlement.',
+        mat5_t: 'Circuit Breaker', mat5_d: 'Auto-halt on extreme moves, prevent liquidation cascades.',
+        delivery_title: '48-Hour Delivery.', delivery_sub: 'Miss the deadline, full refund.',
+        t0: '0–12H', t0_t: 'Server Setup', t0_d: 'Docker cluster, DDoS protection, disaster recovery.',
+        t1: '12–24H', t1_t: 'Chain Integration', t1_d: 'Cold wallet injection, test deposit/withdraw loop.',
+        t2: '24–36H', t2_t: 'Market-Making Tuning', t2_d: 'Real order book, slippage and risk calibration.',
+        t3: '36–48H', t3_t: 'Handover', t3_d: 'On-site acceptance, full source code and docs delivered.',
+        promise_title: 'Our Promise.', promise_sub: 'Five things, in writing.',
+        p0: '<span style="color:#ffffff;font-weight:500;">24/7 support</span> · 15-min response',
+        p1: '<span style="color:#ffffff;font-weight:500;">Escrow</span> · Milestone acceptance & payment per contract',
+        p2: '<span style="color:#ffffff;font-weight:500;">100% pure source code</span> · Full packet audit allowed',
+        p3: '<span style="color:#ffffff;font-weight:500;">48H guarantee</span> · Full refund if missed',
+        p4: '<span style="color:#ffffff;font-weight:500;">On-chain proof</span> · Live 100 USDT test',
+        faq_title: 'FAQ.', faq_sub: 'Straight answers.',
+        faq0_q: 'Any backdoors in the code?', faq0_a: 'None. Everything runs on your own servers. Your team can packet-capture and reverse-engineer the full stack.',
+        faq1_q: 'How are depth and market-making configured?', faq1_a: 'Can connect to major public market depth; market-making tools and risk parameters are configurable, scope per contract. Contact Telegram for a demo.',
+        faq2_q: 'Can I take over if you disappear?', faq2_a: 'One-click deploy scripts, Dockerfile, DB schema, ops docs. Any backend engineer can maintain it.',
+        cta_title: 'Ready to launch?', cta_sub: 'Your exchange goes live in 48 hours.',
+        cta_btn: 'Inquire',
+        footer_disclaimer: 'Apex Engine provides neutral blockchain software R&D and private source code delivery only. We do not participate in client operations, nor provide asset management. Buyers must comply with local regulations. Crypto trading carries extreme risk. The vendor bears no indirect losses.',
+        meta_title: 'Apex Engine - Five Trading Systems · Source Delivery / Private Deploy',
+        meta_desc: 'For overseas Chinese operators: Forex Short-Cycle, Exchange Suite, Flagship Suite, Institutional Desk, Authorized Savings. Source delivery and private deployment. Price on inquiry.'
+      },
+      ja: {
+        nav_about: '会社', nav_systems: 'システム', nav_arch: 'アーキ', nav_matrix: '機能モジュール',
+        nav_delivery: '納品', nav_faq: 'FAQ', nav_articles: '技術記事',
+        nav_cta: 'お問合せ',
+        hero_title1: '取引インフラ。', hero_title2: '48時間で稼働。',
+        hero_sub: '5つの取引システム · ソース納品 / プライベート展開。価格はお問い合わせ。',
+        hero_learn: 'システムを見る', hero_consult: '詳しくはこちら',
+        about_title: '3度の市場サイクルを経験。',
+        about_desc: '取引システムのプライベート納品。マッチング・ウォレット・リスクは用途で設定。ソース納品、鍵は顧客側。',
+        stat1: 'システム選定', stat2: 'ソース納品', stat3: '詳しくはお問い合わせ',
+        systems_title: '5つの取引システム。', systems_sub: '用途で選ぶ。',
+        sys0_t: 'FXショートサイクル', sys0_d: '短期FX',
+        sys1_t: '総合取引所システム', sys1_d: '総合多業務',
+        sys2_t: 'フラッグシップスイート', sys2_d: '同能力・新UI',
+        sys3_t: '機関席', sys3_d: '多役割管理画面',
+        sys4_t: '認可セービング', sys4_d: '貯蓄系ソフトモジュール',
+        sys_desc0: '短期のFX/金取引ソフト。まず早く上線したい、シンプルな商品から始めたいチーム向け。フロント＋管理画面＋ソース/デプロイ（契約通り）。お問い合わせ。',
+        sys_desc1: '短期（バイナリー）・無期限・現物など取引所の常用業務を一式——現物のみではない。一つの管理画面で多業務したいチーム向け。フロント＋管理＋ソース/デプロイ（契約通り）。お問い合わせ。',
+        sys_desc2: '総合取引所システムと同一の業務能力。主にUI/UXが新しい。見た目を重視するチーム向け。より深い別製品ではない。お問い合わせ。',
+        sys_desc3: '多役割管理画面（運営/リスク/カスタマー分離）。人数が多く、長期のプライベート運用が必要なチーム向け。システムとデータは自社で掌握。大手取引所の模倣はしません。お問い合わせ。',
+        sys_desc4: '貯蓄・資産運用系プロダクトのソフトモジュール。ルールと商品パラメータは設定可能。ソースまたはプライベート納品（契約通り）。ソフト技術納品のみで、資金と収益は顧客側が運用。お問い合わせ。',
+        sys_admin: 'お問合せ', sys_pwd: 'Demo',
+        sys_demo: 'デモを見る / お問い合わせ', sys_login: 'Telegramへ',
+        sys_demo_hint: '価格はお問い合わせ · デモはTelegramで請求',
+        arch_title: 'フルスタック基盤。', arch_sub: 'C++/Goエンジン · MySQL + Redis · マルチチェーンRPC。',
+        arch0_t: 'フロント', arch0_d: 'HTML5 / Vue.js、ミリ秒K線、モバイル・PC対応。',
+        arch1_t: 'マッチング', arch1_d: 'C++ / Goメモリ内クラスタ、1ノード10,000+TPS。',
+        arch2_t: 'ストレージ', arch2_d: 'MySQL 8.0マスタースレーブ、Redis Cluster。',
+        arch3_t: 'オンチェーン', arch3_d: 'TRC20 / ERC20 / BSC、Docker隔離、SSL + DDoS。',
+        fund_title: '資金はコールドウォレットへ',
+        fund0: 'マルチノードでリアルタイムスキャン、ユーザー別個別入金アドレス。',
+        fund1: '大口資金は自動的にハードウェアウォレットへ、ベンダーはアクセス権ゼロ。',
+        fund2: '資金はメモリ内元帳へ、ミリ秒リスク制御。',
+        matrix_title: '運用管理画面。', matrix_sub: 'ミリ秒で全体を把握。',
+        mat0_t: 'リスクパラメータ', mat0_d: 'ops consoleでリスク閾値とポリシーを設定（契約範囲）。',
+        mat1_t: '做市ツール', mat1_d: '主要公開板深さに接続可。做市・リスクパラメータ設定可（契約範囲）。',
+        mat2_t: '相場モジュール', mat2_d: '相場ソースと深さ戦略を設定し、マルチモジュール取引に対応。',
+        mat3_t: '深さ戦略', mat3_d: 'オーダーブック深さと見積戦略を設定し、立ち上げと運用調整に対応。',
+        mat4_t: '紹介制度', mat4_d: '多層階コミッション、即時清算。',
+        mat5_t: 'サーキットブレーカー', mat5_d: '極端相場を自動停止、穿仓を防ぐ。',
+        delivery_title: '48時間納品。', delivery_sub: '遅延全額返金。',
+        t0: '0–12H', t0_t: 'サーバー構築', t0_d: 'Dockerクラスタ、DDoS、災害対策。',
+        t1: '12–24H', t1_t: 'チェーン接続', t1_d: 'コールドウォレット注入、テスト入出金。',
+        t2: '24–36H', t2_t: 'マーケットメイク調整', t2_d: 'リアル板、スリッページ較正。',
+        t3: '36–48H', t3_t: '引き渡し', t3_d: '現地検収、全ソース・資料納品。',
+        promise_title: 'Apexの約束。', promise_sub: '5つのこと、書面で。',
+        p0: '<span style="color:#ffffff;font-weight:500;">24/7サポート</span> · 15分以内対応',
+        p1: '<span style="color:#ffffff;font-weight:500;">エスクロー</span> · 契約のマイルストーン検収・支払いに準拠',
+        p2: '<span style="color:#ffffff;font-weight:500;">100%純ソース</span> · 全量パケット監査可',
+        p3: '<span style="color:#ffffff;font-weight:500;">48H保証</span> · 遅延全額返金',
+        p4: '<span style="color:#ffffff;font-weight:500;">オンチェーン証明</span> · 100 USDTテスト',
+        faq_title: 'よくある質問。', faq_sub: 'ストレートに答える。',
+        faq0_q: 'バックドアはある？', faq0_a: 'ありません。すべてお客様サーバーに配置。技術チームで全量パケットキャプチャ・逆解析可能。',
+        faq1_q: '深さ・做市はどう設定する？', faq1_a: '主要公開板深さに接続可。做市ツールとリスクパラメータは設定可能（契約範囲）。デモはTelegramで請求。',
+        faq2_q: '連絡が途絶えたら自分で運用できる？', faq2_a: 'デプロイスクリプト・Dockerfile・DB定義・運用ドキュメント一式納品。普通のバックエンドエンジニアで引き継ぎ可能。',
+        cta_title: 'ローンチ準備はできた？', cta_sub: '48時間後、取引所が稼働します。',
+        cta_btn: '詳しくはこちら',
+        footer_disclaimer: 'Apex Engineは中立的なブロックチェーンソフトウェアの研究開発・ソースコード納品のみを提供します。運用・資金管理は行いません。購入者は所在する法域の法令を遵守してください。暗号資産取引は極めて高いリスクを伴います。',
+        meta_title: 'Apex Engine - 5つの取引システム · ソース納品 / プライベート展開',
+        meta_desc: '海外華人向け：FXショートサイクル、総合取引所システム、フラッグシップ、機関席、認可セービング。ソース納品とプライベート展開。価格はお問い合わせ。'
+      },
+      de: {
+        nav_about: 'Über uns', nav_systems: 'Systeme', nav_arch: 'Architektur', nav_matrix: 'Fähigkeitsmodule',
+        nav_delivery: 'Lieferung', nav_faq: 'FAQ', nav_articles: 'Artikel',
+        nav_cta: 'Kontakt',
+        hero_title1: 'Handels-Infrastruktur.', hero_title2: 'Live in 48 Stunden.',
+        hero_sub: 'Fünf Handelssysteme · Quellcode / Private Deployment. Preis auf Anfrage.',
+        hero_learn: 'Systeme entdecken', hero_consult: 'Anfragen',
+        about_title: 'Drei Marktzyklen. Bewährt.',
+        about_desc: 'Private Trading-Systeme: Matching, Wallet und Risk konfigurierbar. Quellcode-Übergabe; Schlüssel bleiben beim Kunden.',
+        stat1: 'System-SKUs', stat2: 'Quellcode', stat3: 'Anfragen',
+        systems_title: 'Fünf Handelssysteme.', systems_sub: 'Nach Einsatzszenario wählen.',
+        sys0_t: 'Forex Short-Cycle', sys0_d: 'Kurzzyklus-FX',
+        sys1_t: 'Exchange Suite', sys1_d: 'Multi-Produkt',
+        sys2_t: 'Flagship Suite', sys2_d: 'Same stack, new UI',
+        sys3_t: 'Institutional Desk', sys3_d: 'Rollenbasiertes Backend',
+        sys4_t: 'Autorisierte Ersparnisse', sys4_d: 'Spar-Softwaremodul',
+        sys_desc0: 'Kurzzyklus-Software für Devisen/Gold. Für Teams, die schnell live gehen und einfach starten wollen. Frontend + Admin + Quellcode/Deploy (laut Vertrag). Anfragen.',
+        sys_desc1: 'Ein Stack für Short-Cycle (Binary), Perpetuals und Spot—nicht nur Spot. Für Teams mit mehreren Produkten in einem Admin. Frontend + Admin + Source/Deploy (vertraglich). Anfragen.',
+        sys_desc2: 'Gleiche Business-Capabilities wie Exchange Suite—vor allem neueres UI/UX. Für teams, denen Optik wichtiger ist. Keine tiefere Produktstufe. Anfragen.',
+        sys_desc3: 'Rollenbasiertes Backend (Ops / Risk / Support getrennt). Für größere Teams mit langfristigem Private-Ops-Bedarf. System und Daten bleiben bei Ihnen—kein „Klon einer großen Börse“. Anfragen.',
+        sys_desc4: 'Spar-/Vermögensprodukt-Softwaremodul. Regeln und Produktparameter konfigurierbar; Quellcode oder Private Deploy (laut Vertrag). Nur Software-Techniklieferung — Mittel und Erträge betreibt der Kunde. Anfragen.',
+        sys_admin: 'Anfrage', sys_pwd: 'Demo',
+        sys_demo: 'Demo ansehen / Anfragen', sys_login: 'Telegram kontaktieren',
+        sys_demo_hint: 'Preis auf Anfrage · Demo via Telegram',
+        arch_title: 'Full-Stack-Architektur.', arch_sub: 'C++/Go Matching-Engine · MySQL + Redis · Multi-Chain-RPC.',
+        arch0_t: 'Frontend', arch0_d: 'HTML5 / Vue.js, Millisekunden-K-Linien, Mobile & PC.',
+        arch1_t: 'Matching', arch1_d: 'C++ / Go In-Memory-Cluster, 10.000+ TPS pro Knoten.',
+        arch2_t: 'Speicher', arch2_d: 'MySQL 8.0 Master-Slave, Redis Cluster.',
+        arch3_t: 'On-Chain-Sicherheit', arch3_d: 'TRC20 / ERC20 / BSC, Docker-Isolation, SSL + DDoS.',
+        fund_title: 'Gelder fließen in Cold Wallet',
+        fund0: 'Multi-Node-Blockscanning, eigene Einzahl-Adresse pro User, 5+ Chains mit Millisekunden-Bestätigung.',
+        fund1: 'Große Beträge auto-Sweep in Hardware-Wallet — Vendor hat Null Zugriff.',
+        fund2: 'Gelder ins In-Memory-Ledger, Millisekunden-Risikokontrolle.',
+        matrix_title: 'Ops-Konsole.', matrix_sub: 'Millisekunden-Transparenz über Ops.',
+        mat0_t: 'Risikoparameter', mat0_d: 'Konfigurierbare Risikoschwellen und Policies über ops console (laut Vertrag).',
+        mat1_t: 'Market-Making-Tools', mat1_d: 'Anbindung an öffentliche Markttiefe möglich; Market-Making und Risiko konfigurierbar (laut Vertrag).',
+        mat2_t: 'Marktdaten-Modul', mat2_d: 'Konfigurierbare Quellen und Tiefenstrategien für Multi-Modul-Handel.',
+        mat3_t: 'Tiefenstrategie', mat3_d: 'Konfigurierbare Orderbuch-Tiefe und Quoting-Strategien für Launch und Ops.',
+        mat4_t: 'Empfehlungssystem', mat4_d: 'Mehrstufige Provision, sofortige Abrechnung.',
+        mat5_t: 'Circuit Breaker', mat5_d: 'Auto-Stopp bei Extrembewegungen, verhütet Liquidations-Kaskaden.',
+        delivery_title: '48-Stunden-Lieferung.', delivery_sub: 'Versäumt — volle Rückerstattung.',
+        t0: '0–12H', t0_t: 'Server-Setup', t0_d: 'Docker-Cluster, DDoS, Disaster Recovery.',
+        t1: '12–24H', t1_t: 'Chain-Anbindung', t1_d: 'Cold-Wallet-Injektion, Test-Ein-/Auszahlung.',
+        t2: '24–36H', t2_t: 'Market-Making-Tuning', t2_d: 'Echtes Orderbuch, Slippage-Kalibrierung.',
+        t3: '36–48H', t3_t: 'Übergabe', t3_d: 'Vor-Ort-Abnahme, voller Quellcode und Doku.',
+        promise_title: 'Unser Versprechen.', promise_sub: 'Fünf Dinge, schriftlich.',
+        p0: '<span style="color:#ffffff;font-weight:500;">24/7 Support</span> · Antwort in 15 Min',
+        p1: '<span style="color:#ffffff;font-weight:500;">Treuhand</span> · Meilenstein-Abnahme & Zahlung laut Vertrag',
+        p2: '<span style="color:#ffffff;font-weight:500;">100% reiner Quellcode</span> · Full-Packet-Audit erlaubt',
+        p3: '<span style="color:#ffffff;font-weight:500;">48H-Garantie</span> · Volle Rückerstattung bei Verspätung',
+        p4: '<span style="color:#ffffff;font-weight:500;">On-Chain-Beweis</span> · Live-Test mit 100 USDT',
+        faq_title: 'FAQ.', faq_sub: 'Klare Antworten.',
+        faq0_q: 'Gibt es Backdoors?', faq0_a: 'Keine. Alles läuft auf Ihren Servern. Ihr Team kann den vollen Stack packettracen und reverse-engineeren.',
+        faq1_q: 'Wie werden Tiefe und Market-Making konfiguriert?', faq1_a: 'Anbindung an öffentliche Markttiefe möglich; Market-Making-Tools und Risikoparameter konfigurierbar, Umfang laut Vertrag. Demo via Telegram.',
+        faq2_q: 'Kann ich übernehmen, wenn Sie verschwinden?', faq2_a: 'One-Click-Deploy-Scripts, Dockerfile, DB-Schema, Doku. Jeder Backend-Ingenieur kann übernehmen.',
+        cta_title: 'Bereit für den Launch?', cta_sub: 'Ihre Börse ist in 48 Stunden live.',
+        cta_btn: 'Anfragen',
+        footer_disclaimer: 'Apex Engine bietet nur neutrale Blockchain-Software-F&E und private Quellcode-Lieferung an. Wir beteiligen uns nicht am Betrieb und übernehmen keine Vermögensverwaltung. Käufer müssen die lokalen Gesetze einhalten. Krypto-Handel ist extrem riskant. Der Anbieter haftet nicht für indirekte Schäden.',
+        meta_title: 'Apex Engine - Fünf Handelssysteme · Quellcode / Private Deployment',
+        meta_desc: 'Für Übersee-Chinesen: Forex Short-Cycle, Exchange Suite, Flagship Suite, Institutional Desk, Autorisierte Ersparnisse. Quellcode und Private Deployment. Preis auf Anfrage.'
+      }
+    };
+
+    function toggleLang() {
+      const dd = document.getElementById('lang-dropdown');
+      dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+    }
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.lang-switch') && !e.target.closest('#lang-dropdown')) {
+        document.getElementById('lang-dropdown').style.display = 'none';
+      }
+    });
+
+    function setLang(lang) {
+      const dict = i18n[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          if (key.startsWith('p') || key === 'about_desc') el.innerHTML = dict[key];
+          else el.textContent = dict[key];
+        }
+      });
+      document.getElementById('current-lang').textContent = {zh:'中文',en:'English',ja:'日本語',de:'Deutsch'}[lang];
+      document.getElementById('lang-dropdown').style.display = 'none';
+      if (dict.meta_title) document.title = dict.meta_title;
+      if (dict.meta_desc) document.querySelector('meta[name="description"]').content = dict.meta_desc;
+      localStorage.setItem('lang', lang);
+      if (typeof renderSysDesc === 'function' && typeof curSysIdx !== 'undefined') renderSysDesc();
+    }
+
+    function openMenu() {
+      document.getElementById('mobile-menu').classList.add('open');
+      document.getElementById('menu-backdrop').classList.add('open');
+    }
+    function closeMenu() {
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.getElementById('menu-backdrop').classList.remove('open');
+    }
+
+    // 右滑收起
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      const menu = document.getElementById('mobile-menu');
+      if (!menu.classList.contains('open')) return;
+      const touchEndX = e.changedTouches[0].clientX;
+      if (touchEndX - touchStartX > 60) closeMenu();
+    }, { passive: true });
+
+    const v = document.getElementById('bg-video');
+    if (v) {
+      v.playbackRate = 0.75;
+      v.addEventListener('loadedmetadata', () => v.playbackRate = 0.75);
+    }
+
+    // 系统 tab 切换
+    const tabs = document.querySelectorAll('.sys-tab');
+    const desc = document.getElementById('sys-desc');
+    let curSysIdx = 0;
+    function renderSysDesc() {
+      const lang = localStorage.getItem('lang') || 'zh';
+      const keys = ['sys_desc0','sys_desc1','sys_desc2','sys_desc3','sys_desc4'];
+      desc.textContent = i18n[lang][keys[curSysIdx]] || i18n.zh[keys[curSysIdx]];
+    }
+    function switchSys(idx, el) {
+      curSysIdx = idx;
+      tabs.forEach(x => {
+        x.style.opacity = '0.6';
+        x.style.background = 'rgba(255,255,255,0.03)';
+      });
+      el.style.opacity = '1';
+      el.style.background = 'rgba(255,255,255,0.08)';
+      renderSysDesc();
+    }
+
+    // 恢复上次语言（必须在 desc 初始化之后）
+    const saved = localStorage.getItem('lang') || 'zh';
+    if (saved !== 'zh') setLang(saved);
+    renderSysDesc();
+  </script>
+</body>
+</html>
