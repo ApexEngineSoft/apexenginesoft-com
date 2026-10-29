@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>做市工具与公开行情深度：冷启动怎么配？ - Apex Engine</title>
+  <meta name="description" content="镜像做市是新盘冷启动的标准配置。本文拆解盘口斜率、撤单率、大单分层三个需要谨慎调校的参数。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/03-market-making.html">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "做市工具与公开行情深度：冷启动怎么配？",
+    "author": { "@type": "Organization", "name": "Apex Engine" },
+    "publisher": { "@type": "Organization", "name": "Apex Engine" }
+  }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #000; color: #f5f5f7;
+      -webkit-font-smoothing: antialiased; letter-spacing: -0.01em; line-height: 1.7;
+    }
+    a { color: #2997ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    nav { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    main { max-width: 760px; margin: 0 auto; padding: 60px 24px; }
+    .tag { font-size: 12px; color: #c9a961; margin-bottom: 12px; }
+    h1 { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 24px; }
+    h2 { font-size: 24px; font-weight: 600; margin: 40px 0 16px; }
+    p { color: #d1d1d6; font-size: 17px; margin-bottom: 16px; }
+    strong { color: #fff; }
+    ul { margin: 0 0 20px 24px; color: #d1d1d6; font-size: 17px; }
+    li { margin-bottom: 10px; }
+    .back { display: inline-block; margin-bottom: 32px; font-size: 14px; }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html" class="brand">Apex <span>Engine</span></a>
+    <a href="index.html">← 文章列表</a>
+  </nav>
+
+  <main>
+    <a href="index.html" class="back">← 所有文章</a>
+    <div class="tag">做市算法 · 盘口复刻</div>
+    <h1>做市工具与公开行情深度：冷启动怎么配？</h1>
+
+    <p><strong>镜像做市</strong>是指可对接主流公开行情深度，并配合做市工具与风控参数配置，帮助新盘完成冷启动。具体能力范围以合同为准。</p>
+
+    <p>但做市机器人参数调校不当，反而会影响盘口观感。以下是三个需要谨慎调校的参数。</p>
+
+    <h2>三个需要谨慎调校的参数</h2>
+    <ul>
+      <li><strong>盘口斜率</strong>：买卖价差必须跟随头部所实时波动，不能固定 0.01%。真实盘口的 spread 会随行情波动而扩大收窄。</li>
+      <li><strong>挂单节奏</strong>：挂单与撤改节奏应贴近真实公开盘口行为，避免长时间静止的异常大单。</li>
+      <li><strong>大单分层</strong>：不能只在买一卖一挂巨量，要按 5 档、10 档深度均匀分布。真实盘口的深度是渐变的，不是集中在一档。</li>
+    </ul>
+
+    <h2>为什么避免静态写死挂单？</h2>
+    <p>很多低价系统用静态写死挂单——开盘在买卖一侧挂一堆大单，看起来深度很厚。但这种盘口在专业用户眼里很容易识别：</p>
+    <ul>
+      <li>价格不随行情变动</li>
+      <li>挂单数量一成不变</li>
+      <li>没有真实的成交记录</li>
+    </ul>
+    <p>专业用户入金前常会观察盘口 10–30 分钟，静态挂单会直接降低信任。</p>
+
+    <h2>结论</h2>
+    <p>做市工具是新盘冷启动的常用配置，建议对接主流公开行情深度并动态调整挂单策略。Apex Engine 支持可配置的做市与风控参数，而非静态写死挂单（以合同为准）。</p>
+
+    <p style="margin-top:40px;"><a href="https://t.me/ApexEngine_ts" target="_blank">咨询做市机器人模块 →</a></p>
+  </main>
+
+  <footer>© Apex Engine · <a href="https://t.me/ApexEngine_ts" target="_blank">@ApexEngine_ts</a></footer>
+</body>
+</html>

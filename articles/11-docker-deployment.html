@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>交易所 Docker 部署与运维：48 小时上线后怎么管？ | Apex Engine</title>
+  <meta name="description" content="交易所源码 Docker 部署、服务器配置、日常运维、备份策略。拿到源码后怎么跑起来。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/11-docker-deployment.html">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #000; color: #f5f5f7; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    .bg-video-container { position: fixed; inset: 0; z-index: -30; overflow: hidden; pointer-events: none; }
+    .bg-video-container video { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: brightness(0.35) saturate(0.6); }
+    .bg-veil { position: fixed; inset: 0; z-index: -20; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%); }
+    nav { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); background: rgba(0,0,0,0.4); }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    main { max-width: 760px; margin: 0 auto; padding: 80px 24px; }
+    h1 { font-size: 38px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 20px; line-height: 1.2; }
+    h2 { font-size: 24px; font-weight: 600; margin-top: 44px; margin-bottom: 14px; }
+    p { color: #d1d1d6; font-size: 16px; margin-bottom: 16px; }
+    .lead { color: #86868b; font-size: 18px; margin-bottom: 36px; }
+    .glass { background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid rgba(255,255,255,0.08); }
+    .related { margin-top: 48px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .related h3 { font-size: 16px; margin-bottom: 12px; color: #c9a961; }
+    .related a { display: block; color: #d1d1d6; padding: 6px 0; font-size: 14px; }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 80px; }
+    a { color: #c9a961; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="bg-video-container"><video autoplay loop muted playsinline webkit-playsinline="true" poster="../poster.jpg"><source src="../background.mp4" type="video/mp4"></video></div>
+  <div class="bg-veil"></div>
+  <nav><a href="../index.html" class="brand">Apex <span>Engine</span></a><div style="display:flex;gap:12px;align-items:center;"><div onclick="toggleLang()" style="padding:8px 14px;border-radius:980px;background:rgba(255,255,255,0.08);cursor:pointer;font-size:13px;">🌐 <span id="cl">中文</span></div><a href="../index.html" style="font-size:14px; color:#86868b;">← Home</a></div></nav>
+  <main>
+    <h1>交易所 Docker 部署与运维</h1>
+    <p class="lead">拿到源码后怎么跑起来？服务器配置、部署流程、日常运维一次讲清。</p>
+
+    <p>买了交易所源码，第一件事不是改代码，是先把它跑起来。正规的<strong>交易所搭建</strong>交付都带 Docker 一键部署脚本，48 小时上线不是空话。这篇讲部署和运维的真实流程。</p>
+
+    <h2>一、服务器配置要求</h2>
+    <div class="glass">
+      <p><strong>入门级（日活 &lt; 1000）：</strong>4核 8G，100G SSD，海外 VPS（AWS / Vultr / 阿里云国际）。</p>
+      <p><strong>进阶级（日活 5000+）：</strong>8核 16G，200G SSD，主从热备。</p>
+      <p><strong>机构级（日活 5万+）：</strong>撮合引擎独立部署 + MySQL 集群 + Redis Cluster。</p>
+    </div>
+
+    <h2>二、Docker 部署流程</h2>
+    <p>正规交付包含 docker-compose.yml，一条命令拉起全部服务：</p>
+    <p>- MySQL 8.0（主从）<br>
+    - Redis Cluster<br>
+    - 撮合引擎（C++/Go）<br>
+    - 钱包 RPC（TRC20/ERC20/BSC）<br>
+    - 前端 Nginx<br>
+    - 做市机器人</p>
+    <p>整个部署过程 2–4 小时，不需要你手动配环境。</p>
+
+    <h2>三、日常运维要点</h2>
+    <p>- <strong>数据库备份：</strong>每日自动 mysqldump，异地存储<br>
+    - <strong>日志监控：</strong>撮合引擎错误、钱包交易失败、登录异常<br>
+    - <strong>SSL 证书：</strong>Let's Encrypt 自动续期<br>
+    - <strong>DDoS 高防：</strong>Cloudflare 或阿里云高防 IP<br>
+    - <strong>冷钱包余额：</strong>定期检查归集阈值</p>
+
+    <h2>四、普通后端能接手吗？</h2>
+    <p>能。我们交付 Dockerfile、数据库字典、运维文档，普通 Java/Go 后端工程师看一周就能接手。这也是为什么我们坚持源码交付——不绑架客户。</p>
+
+    <div class="related">
+      <h3>相关阅读</h3>
+      <a href="04-exchange-source-guide.html">→ 交易所源码搭建完全指南</a>
+      <a href="02-cold-wallet.html">→ 冷钱包归集 7 个工程细节</a>
+      <a href="10-white-label-vs-source.html">→ 白标 vs 源码交付怎么选</a>
+    </div>
+
+    <p style="margin-top: 40px; text-align: center;">
+      <a href="https://t.me/ApexEngine_ts" target="_blank" style="display: inline-block; background: #fff; color: #000; padding: 14px 32px; border-radius: 980px; font-weight: 500;">获取部署文档样本</a>
+    </p>
+  </main>
+  <footer>© 2026 Apex Engine · v3.7</footer>
+              <script>
+    const en = {
+  "交易所 Docker 部署与运维": "Exchange Docker Deployment & Ops",
+  "一、服务器配置要求": "1. Server Requirements",
+  "二、Docker 部署流程": "2. Docker Deployment",
+  "三、日常运维要点": "3. Daily Ops",
+  "四、普通后端能接手吗？": "4. Can a Regular Backend Take Over?",
+  "相关阅读": "Related Reading",
+  "拿到源码后怎么跑起来？服务器配置、部署流程、日常运维一次讲清。": "Got the source? How to run it: server config, deployment, and daily ops in one article.",
+  "买了交易所源码，第一件事不是改代码，是先把它跑起来。正规的交易所搭建交付都带 Docker 一键部署脚本，48 小时上线不是空话。这篇讲部署和运维的真实流程。": "First thing after buying source: run it, not modify it. Legit deliveries include Docker one-click scripts - 48-hour launch is real. This article covers the actual deployment and ops flow.",
+  "入门级（日活 < 1000）：": "Entry (under 1K DAU): ",
+  "4核 8G，100G SSD，海外 VPS（AWS / Vultr / 阿里云国际）。": "4C8G, 100G SSD, overseas VPS (AWS / Vultr / Alibaba Intl).",
+  "进阶级（日活 5000+）：": "Advanced (5K+ DAU): ",
+  "8核 16G，200G SSD，主从热备。": "8C16G, 200G SSD, master-slave HA.",
+  "机构级（日活 5万+）：": "Institutional (50K+ DAU): ",
+  "撮合引擎独立部署 + MySQL 集群 + Redis Cluster。": "Dedicated matching engine + MySQL cluster + Redis Cluster.",
+  "正规交付包含 docker-compose.yml，一条命令拉起全部服务：": "Legit delivery includes docker-compose.yml - one command brings up everything:",
+  "- MySQL 8.0（主从）\n    - Redis Cluster\n    - 撮合引擎（C++/Go）\n    - 钱包 RPC（TRC20/ERC20/BSC）\n    - 前端 Nginx\n    - 做市机器人": "- MySQL 8.0 (master-slave) - Redis Cluster - Matching engine (C++/Go) - Wallet RPC (TRC20/ERC20/BSC) - Frontend Nginx - Market-making bots",
+  "- MySQL 8.0（主从）": "- MySQL 8.0 (master-slave)",
+  "- Redis Cluster": "- Redis Cluster",
+  "- 撮合引擎（C++/Go）": "- Matching engine (C++/Go)",
+  "- 钱包 RPC（TRC20/ERC20/BSC）": "- Wallet RPC (TRC20/ERC20/BSC)",
+  "- 前端 Nginx": "- Frontend Nginx",
+  "- 做市机器人": "- Market-making bots",
+  "整个部署过程 2–4 小时，不需要你手动配环境。": "Full deployment takes 2-4 hours, no manual environment config.",
+  "数据库备份：": "DB backup: ",
+  "每日自动 mysqldump，异地存储": "Daily auto mysqldump, offsite storage",
+  "日志监控：": "Log monitoring: ",
+  "撮合引擎错误、钱包交易失败、登录异常": "Engine errors, wallet failures, login anomalies",
+  "SSL 证书：": "SSL certs: ",
+  "Let's Encrypt 自动续期": "Let's Encrypt auto-renewal",
+  "DDoS 高防：": "DDoS protection: ",
+  "Cloudflare 或阿里云高防 IP": "Cloudflare or Alibaba shield IP",
+  "冷钱包余额：": "Cold wallet balance: ",
+  "定期检查归集阈值": "Periodic sweep-threshold checks",
+  "能。我们交付 Dockerfile、数据库字典、运维文档，普通 Java/Go 后端工程师看一周就能接手。这也是为什么我们坚持源码交付——不绑架客户。": "Yes. We deliver Dockerfile, DB dictionary, and ops docs. Any Java/Go backend engineer can take over within a week. That is why we insist on source delivery - no lock-in.",
+  "获取部署文档样本": "Get Deployment Docs Sample",
+  "交易所搭建": "exchange setup",
+  "交付都带 Docker 一键部署脚本，48 小时上线不是空话。这篇讲部署和运维的真实流程。": "deliveries include Docker one-click scripts - 48-hour launch is real. This covers the actual deployment and ops flow.",
+  "→ 交易所源码搭建完全指南": "-> Exchange Source Guide",
+  "→ 冷钱包归集 7 个工程细节": "-> Cold Wallet: 7 Engineering Details",
+  "→ 白标 vs 源码交付怎么选": "-> White Label vs Source: How to Choose"
+};
+    let enMode = localStorage.getItem('art_en') === '1';
+    function applyLang(m) {
+      document.getElementById('cl').textContent = m ? 'EN' : '中文';
+      if (!m) { location.reload(); return; }
+      const walk = el => {
+        const full = el.textContent.trim();
+        if (el.tagName !== 'MAIN' && el.tagName !== 'BODY' && !el.querySelector('a') && full && en[full]) {
+          el.innerHTML = en[full];
+          return;
+        }
+        [...el.childNodes].forEach(node => {
+          if (node.nodeType === 3) {
+            const t = node.textContent;
+            const ts = t.trim();
+            if (ts && en[ts]) { node.textContent = t.replace(ts, en[ts]); return; }
+            if (t.includes('\n')) {
+              node.textContent = t.split('\n').map(ln => {
+                const s = ln.trim();
+                return s && en[s] ? ln.replace(s, en[s]) : ln;
+              }).join('\n');
+            }
+          } else if (node.nodeType === 1 && !/^(SCRIPT|STYLE)$/.test(node.tagName)) walk(node);
+        });
+      };
+      walk(document.querySelector('main') || document.body);
+    }
+    function toggleLang() {
+      enMode = !enMode;
+      localStorage.setItem('art_en', enMode ? '1' : '0');
+      applyLang(enMode);
+    }
+    applyLang(enMode);
+  </script>
+</body>
+</html>

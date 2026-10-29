@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>币币交易所源码完整拆解：数字资产交易平台怎么搭？ | Apex Engine</title>
+  <meta name="description" content="币币交易所源码包含撮合引擎、K线、钱包、Admin后台、APP。数字资产交易平台搭建完整指南。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/09-spot-exchange-source.html">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #000; color: #f5f5f7; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    .bg-video-container { position: fixed; inset: 0; z-index: -30; overflow: hidden; pointer-events: none; }
+    .bg-video-container video { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: brightness(0.35) saturate(0.6); }
+    .bg-veil { position: fixed; inset: 0; z-index: -20; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%); }
+    nav { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); background: rgba(0,0,0,0.4); }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    main { max-width: 760px; margin: 0 auto; padding: 80px 24px; }
+    h1 { font-size: 38px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 20px; line-height: 1.2; }
+    h2 { font-size: 24px; font-weight: 600; margin-top: 44px; margin-bottom: 14px; }
+    p { color: #d1d1d6; font-size: 16px; margin-bottom: 16px; }
+    .lead { color: #86868b; font-size: 18px; margin-bottom: 36px; }
+    .glass { background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid rgba(255,255,255,0.08); }
+    .related { margin-top: 48px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .related h3 { font-size: 16px; margin-bottom: 12px; color: #c9a961; }
+    .related a { display: block; color: #d1d1d6; padding: 6px 0; font-size: 14px; }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 80px; }
+    a { color: #c9a961; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="bg-video-container"><video autoplay loop muted playsinline webkit-playsinline="true" poster="../poster.jpg"><source src="../background.mp4" type="video/mp4"></video></div>
+  <div class="bg-veil"></div>
+  <nav><a href="../index.html" class="brand">Apex <span>Engine</span></a><div style="display:flex;gap:12px;align-items:center;"><div onclick="toggleLang()" style="padding:8px 14px;border-radius:980px;background:rgba(255,255,255,0.08);cursor:pointer;font-size:13px;">🌐 <span id="cl">中文</span></div><a href="../index.html" style="font-size:14px; color:#86868b;">← Home</a></div></nav>
+  <main>
+    <h1>币币交易所源码完整拆解</h1>
+    <p class="lead">数字资产交易平台搭建：从撮合引擎到冷钱包，一个完整的币币交易所包含什么。</p>
+
+    <p>币币交易（Spot Trading）是交易所最基础的功能——BTC/USDT、ETH/USDT 这种买卖数字货币。一套完整的<strong>币币交易所源码</strong>远不止一个 K 线图，它是一整套前后端 + 钱包 + 后台系统。</p>
+
+    <h2>一、币币交易所源码的 7 个核心模块</h2>
+    <div class="glass">
+      <p><strong>1. 撮合引擎：</strong>内存级订单簿，单节点 10,000+ TPS。详见<a href="01-matching-engine.html">为什么撮合必须用 C++</a>。</p>
+      <p><strong>2. 前端交易页：</strong>K 线图、盘口、下单面板、持仓列表。</p>
+      <p><strong>3. 钱包模块：</strong>TRC20/ERC20/BSC 多链充提，独立充值地址。详见<a href="02-cold-wallet.html">冷钱包归集细节</a>。</p>
+      <p><strong>4. Admin 后台：</strong>用户、风控、资金、币种管理。</p>
+      <p><strong>5. APP：</strong>iOS + Android，uni-app 或原生。</p>
+      <p><strong>6. 做市机器人：</strong>开盘即有百万级深度。详见<a href="03-market-making.html">镜像盘口</a>。</p>
+      <p><strong>7. KYC / OTP：</strong>注册登录二次验证。</p>
+    </div>
+
+    <h2>二、币币 vs 秒合约 vs 永续</h2>
+    <p>币币是"现货买卖"——你买了 BTC 就是真持有。秒合约是"短线赌涨跌"。永续是"带杠杆的衍生品"。正规的<strong>数字资产交易平台</strong>一般三合一打包，一个系统里全有。</p>
+
+    <h2>三、成本与交付</h2>
+    <p>纯币币现货源码公开价详询。三合一（币币+秒合约+永续）公开价详询。常见 48 小时部署上线。详见<a href="04-exchange-source-guide.html">交易所源码多少钱</a>。</p>
+
+    <h2>常见问题</h2>
+    <p><strong>Q：带自发币功能吗？</strong><br>
+    支持。一键发平台币，自主 K 线绘制。</p>
+    <p><strong>Q：支持多少交易对？</strong><br>
+    后台无限添加，默认 50+ 主流币。</p>
+    <p><strong>Q：是 100% 源码吗？</strong><br>
+    100% 纯源码物理交付，无加密、无 license 回连。</p>
+
+    <div class="related">
+      <h3>相关阅读</h3>
+      <a href="04-exchange-source-guide.html">→ 交易所源码搭建完全指南：开一个交易所要多少钱？</a>
+      <a href="06-perpetual-source.html">→ 永续合约源码核心模块拆解</a>
+      <a href="08-institutional-desk-delivery.html">→ 机构席位交付说明</a>
+    </div>
+
+    <p style="margin-top: 40px; text-align: center;">
+      <a href="https://t.me/ApexEngine_ts" target="_blank" style="display: inline-block; background: #fff; color: #000; padding: 14px 32px; border-radius: 980px; font-weight: 500;">看币币交易所演示</a>
+    </p>
+  </main>
+  <footer>© 2026 Apex Engine · v3.7</footer>
+              <script>
+    const en = {
+  "币币交易所源码完整拆解": "Spot Exchange Source Code Explained",
+  "一、币币交易所源码的 7 个核心模块": "1. Seven Core Modules",
+  "二、币币 vs 秒合约 vs 永续": "2. Spot vs Binary vs Perpetual",
+  "三、成本与交付": "3. Cost & Delivery",
+  "常见问题": "FAQ",
+  "相关阅读": "Related Reading",
+  "数字资产交易平台搭建：从撮合引擎到冷钱包，一个完整的币币交易所包含什么。": "Digital asset platform setup: from matching engine to cold wallet - what a complete spot exchange includes.",
+  "币币交易（Spot Trading）是交易所最基础的功能——BTC/USDT、ETH/USDT 这种买卖数字货币。一套完整的币币交易所源码远不止一个 K 线图，它是一整套前后端 + 钱包 + 后台系统。": "Spot trading is the base function of any exchange - buying BTC/USDT, ETH/USDT. A complete spot source is far more than a chart: frontend + backend + wallet + admin.",
+  "1. 撮合引擎：": "1. Matching engine: ",
+  "内存级订单簿，单节点 10,000+ TPS。详见为什么撮合必须用 C++。": "In-memory order book, 10,000+ TPS per node. See why matching needs C++.",
+  "2. 前端交易页：": "2. Frontend: ",
+  "K 线图、盘口、下单面板、持仓列表。": "Chart, order book, order panel, positions.",
+  "3. 钱包模块：": "3. Wallet: ",
+  "TRC20/ERC20/BSC 多链充提，独立充值地址。详见冷钱包归集细节。": "TRC20/ERC20/BSC multi-chain, unique deposit addresses. See cold wallet details.",
+  "4. Admin 后台：": "4. Admin: ",
+  "用户、风控、资金、币种管理。": "Users, risk, funds, symbols.",
+  "5. APP：": "5. APP: ",
+  "iOS + Android，uni-app 或原生。": "iOS + Android, uni-app or native.",
+  "6. 做市机器人：": "6. Market-making bot: ",
+  "开盘即有百万级深度。详见镜像盘口。": "Millions of depth at launch. See mirrored order books.",
+  "7. KYC / OTP：": "7. KYC / OTP: ",
+  "注册登录二次验证。": "2FA for registration and login.",
+  "币币是\"现货买卖\"——你买了 BTC 就是真持有。秒合约是\"短线赌涨跌\"。永续是\"带杠杆的衍生品\"。正规的数字资产交易平台一般三合一打包，一个系统里全有。": "Spot means real ownership - you actually hold BTC. Binary is short-term betting. Perpetual is leveraged derivatives. Legit platforms bundle all three in one system.",
+  "纯币币现货源码公开价详询。三合一（币币+秒合约+永续）公开价详询。常见 48 小时部署上线。详见交易所源码多少钱。": "Spot-only source: price on inquiry. Three-in-one bundle: price on inquiry. Typical go-live in 48 hours. See exchange source guide.",
+  "Q：带自发币功能吗？": "Q: Token minting included?",
+  "支持。一键发平台币，自主 K 线绘制。": "Yes. One-click platform token, custom K-lines.",
+  "Q：支持多少交易对？": "Q: How many pairs?",
+  "后台无限添加，默认 50+ 主流币。": "Unlimited in admin, 50+ majors by default.",
+  "Q：是 100% 源码吗？": "Q: 100% source?",
+  "100% 纯源码物理交付，无加密、无 license 回连。": "100% pure physical source, no encryption, no license callback.",
+  "看币币交易所演示": "See Spot Exchange Demo",
+  "币币交易所源码": "spot exchange source",
+  "数字资产交易平台": "digital asset platform",
+  "内存级订单簿，单节点 10,000+ TPS。详见": "In-memory order book, 10,000+ TPS per node. See ",
+  "TRC20/ERC20/BSC 多链充提，独立充值地址。详见": "TRC20/ERC20/BSC multi-chain, unique deposit addresses. See ",
+  "开盘即有百万级深度。详见": "Millions of depth at launch. See ",
+  "远不止一个 K 线图，它是一整套前后端 + 钱包 + 后台系统。": "is far more than a chart - it is a full frontend + backend + wallet + admin system.",
+  "一般三合一打包，一个系统里全有。": "bundle all three in one system.",
+  "为什么撮合必须用 C++": "Why matching needs C++",
+  "冷钱包归集细节": "Cold wallet details",
+  "镜像盘口": "Mirrored order books",
+  "交易所源码多少钱": "How much exchange source costs",
+  "纯币币现货源码公开价详询。三合一（币币+秒合约+永续）公开价详询。常见 48 小时部署上线。详见": "Spot-only source: price on inquiry. Bundle: price on inquiry. Typical 48h go-live. See ",
+  "→ 交易所源码搭建完全指南：开一个交易所要多少钱？": "-> Exchange Source Guide: How Much to Launch?",
+  "→ 永续合约源码核心模块拆解": "-> Perpetual Core Modules",
+  "→ 机构席位交付说明": "-> Institutional Desk Delivery"
+};
+    let enMode = localStorage.getItem('art_en') === '1';
+    function applyLang(m) {
+      document.getElementById('cl').textContent = m ? 'EN' : '中文';
+      if (!m) { location.reload(); return; }
+      const walk = el => {
+        const full = el.textContent.trim();
+        if (el.tagName !== 'MAIN' && el.tagName !== 'BODY' && !el.querySelector('a') && full && en[full]) {
+          el.innerHTML = en[full];
+          return;
+        }
+        [...el.childNodes].forEach(node => {
+          if (node.nodeType === 3) {
+            const t = node.textContent;
+            const ts = t.trim();
+            if (ts && en[ts]) { node.textContent = t.replace(ts, en[ts]); return; }
+            if (t.includes('\n')) {
+              node.textContent = t.split('\n').map(ln => {
+                const s = ln.trim();
+                return s && en[s] ? ln.replace(s, en[s]) : ln;
+              }).join('\n');
+            }
+          } else if (node.nodeType === 1 && !/^(SCRIPT|STYLE)$/.test(node.tagName)) walk(node);
+        });
+      };
+      walk(document.querySelector('main') || document.body);
+    }
+    function toggleLang() {
+      enMode = !enMode;
+      localStorage.setItem('art_en', enMode ? '1' : '0');
+      applyLang(enMode);
+    }
+    applyLang(enMode);
+  </script>
+</body>
+</html>

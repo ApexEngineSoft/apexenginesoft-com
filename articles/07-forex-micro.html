@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>外汇微盘系统搭建指南：黄金原油期货微盘源码多少钱？ | Apex Engine</title>
+  <meta name="description" content="外汇微盘、黄金微盘、原油微盘系统搭建完整指南。包含主流交易对、秒级决胜机制、风控参数与做市工具，公开价详询。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/07-forex-micro.html">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #000; color: #f5f5f7; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    .bg-video-container { position: fixed; inset: 0; z-index: -30; overflow: hidden; pointer-events: none; }
+    .bg-video-container video { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: brightness(0.35) saturate(0.6); }
+    .bg-veil { position: fixed; inset: 0; z-index: -20; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%); }
+    nav { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); background: rgba(0,0,0,0.4); }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    main { max-width: 760px; margin: 0 auto; padding: 80px 24px; }
+    h1 { font-size: 38px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 20px; line-height: 1.2; }
+    h2 { font-size: 24px; font-weight: 600; margin-top: 44px; margin-bottom: 14px; }
+    p { color: #d1d1d6; font-size: 16px; margin-bottom: 16px; }
+    .lead { color: #86868b; font-size: 18px; margin-bottom: 36px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 14px; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { color: #c9a961; }
+    .glass { background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid rgba(255,255,255,0.08); }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 80px; }
+    a { color: #c9a961; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="bg-video-container"><video autoplay loop muted playsinline webkit-playsinline="true" poster="../poster.jpg"><source src="../background.mp4" type="video/mp4"></video></div>
+  <div class="bg-veil"></div>
+  <nav><a href="../index.html" class="brand">Apex <span>Engine</span></a><div style="display:flex;gap:12px;align-items:center;"><div onclick="toggleLang()" style="padding:8px 14px;border-radius:980px;background:rgba(255,255,255,0.08);cursor:pointer;font-size:13px;">🌐 <span id="cl">中文</span></div><a href="../index.html" style="font-size:14px; color:#86868b;">← Home</a></div></nav>
+  <main>
+    <h1>外汇微盘系统搭建指南</h1>
+    <p class="lead">黄金、原油、期货、外汇——微盘系统为什么是流水最快的品类？</p>
+
+    <p>微盘（Micro Trading / 外汇微盘）是秒合约的一个细分品类，主打黄金、原油、外汇主流对。用户门槛低（10 USDT 起投），180 秒决胜，流水周转极快。这篇讲清楚<strong>微盘系统源码</strong>的核心和成本。</p>
+
+    <h2>一、微盘和普通秒合约有什么区别？</h2>
+    <div class="glass">
+      <p><strong>交易对不同：</strong>微盘主打 XAU/USD（黄金）、WTI 原油、EUR/USD、GBP/USD，不是数字货币。</p>
+      <p><strong>用户画像不同：</strong>微盘用户偏传统金融背景，对 K 线图接受度高，客单价比纯币圈用户高。</p>
+      <p><strong>时间档位：</strong>微盘一般 180 秒、240 秒、360 秒三档，和币圈秒合约一致。</p>
+    </div>
+
+    <h2>二、微盘源码包含哪些交易对？</h2>
+    <table>
+      <tr><th>品类</th><th>主流交易对</th><th>用户热度</th></tr>
+      <tr><td>贵金属</td><td>XAU/USD 黄金、XAG/USD 白银</td><td>最高</td></tr>
+      <tr><td>能源</td><td>WTI 原油、Brent 原油</td><td>高</td></tr>
+      <tr><td>外汇</td><td>EUR/USD、GBP/USD、USD/JPY</td><td>中</td></tr>
+      <tr><td>股指</td><td>US30、NAS100、SPX500</td><td>中</td></tr>
+    </table>
+
+    <h2>三、风控参数与做市工具</h2>
+    <p>微盘系统的运维能力集中在 ops console（以合同为准）：</p>
+    <p>- <strong>风控参数：</strong>账户与交易相关阈值可配置<br>
+    - <strong>做市与行情工具：</strong>可对接公开行情深度，参数可配置<br>
+    - <strong>ops console：</strong>用户、订单、资金与日志统一视图<br>
+    - <strong>审计与权限：</strong>角色权限与操作日志便于交接</p>
+
+    <h2>四、成本与交付</h2>
+    <p>纯<strong>外汇微盘源码</strong>公开价详询，常见 24 小时交付。若打包"微盘 + 秒合约 + 永续 + 币币"综合盘，公开价详询，常见 48 小时交付。</p>
+
+    <h2>常见问题</h2>
+    <p><strong>Q：微盘的行情数据从哪来？</strong><br>
+    正规系统接路透/彭博行情源，或者镜像 MT4 实时报价。</p>
+    <p><strong>Q：支持多少交易对？</strong><br>
+    一般 20–50 个，后台可加。</p>
+    <p><strong>Q：带 K 线图吗？</strong><br>
+    必须带 Lightweight Charts，和 TradingView 同源。</p>
+
+    <p style="margin-top: 40px; text-align: center;">
+      <a href="https://t.me/ApexEngine_ts" target="_blank" style="display: inline-block; background: #fff; color: #000; padding: 14px 32px; border-radius: 980px; font-weight: 500;">看微盘系统演示</a>
+    </p>
+  </main>
+  <footer>© 2026 Apex Engine · v3.7</footer>
+              <script>
+    const en = {
+  "外汇微盘系统搭建指南": "Forex Micro-Platform Setup Guide",
+  "一、微盘和普通秒合约有什么区别？": "1. Micro vs Regular Binary",
+  "二、微盘源码包含哪些交易对？": "2. Instruments Included",
+  "三、风控参数与做市工具": "3. Risk Parameters & Market Tools",
+  "四、成本与交付": "4. Cost & Delivery",
+  "常见问题": "FAQ",
+  "黄金、原油、期货、外汇——微盘系统为什么是流水最快的品类？": "Gold, oil, futures, FX - why micro platforms generate the fastest flow.",
+  "微盘（Micro Trading / 外汇微盘）是秒合约的一个细分品类，主打黄金、原油、外汇主流对。用户门槛低（10 USDT 起投），180 秒决胜，流水周转极快。这篇讲清楚微盘系统源码的核心和成本。": "Micro trading is a binary sub-category focused on gold, oil, and FX majors. Low entry (from 10 USDT), 180-second rounds, extremely fast turnover. This article covers the core and cost of micro platform source.",
+  "交易对不同：": "Instruments: ",
+  "微盘主打 XAU/USD（黄金）、WTI 原油、EUR/USD、GBP/USD，不是数字货币。": "Micro focuses on XAU/USD, WTI crude, EUR/USD, GBP/USD - not crypto.",
+  "用户画像不同：": "Users: ",
+  "微盘用户偏传统金融背景，对 K 线图接受度高，客单价比纯币圈用户高。": "Traditional finance background, chart-friendly, higher ticket than pure crypto users.",
+  "时间档位：": "Time frames: ",
+  "微盘一般 180 秒、240 秒、360 秒三档，和币圈秒合约一致。": "180s/240s/360s, same as crypto binaries.",
+  "微盘系统的运维能力集中在 ops console（以合同为准）：": "Micro-platform ops capabilities center on the ops console (per contract):",
+  "风控参数：": "Risk parameters: ",
+  "账户与交易相关阈值可配置": "Account and trading thresholds are configurable",
+  "做市与行情工具：": "Market & MM tools: ",
+  "可对接公开行情深度，参数可配置": "Can connect to public market depth; parameters configurable",
+  "ops console：": "Ops console: ",
+  "用户、订单、资金与日志统一视图": "Unified view for users, orders, funds, and logs",
+  "审计与权限：": "Audit & permissions: ",
+  "角色权限与操作日志便于交接": "Role permissions and audit logs for handover",
+  "角色权限与操作日志便于交接": "Role permissions and audit logs for handover",
+  "纯外汇微盘源码公开价详询，常见 24 小时交付。若打包\"微盘 + 秒合约 + 永续 + 币币\"综合盘，公开价详询，常见 48 小时交付。": "FX micro source: price on inquiry; typical 24-hour delivery. Bundle with binary/perp/spot: price on inquiry; typical 48 hours.",
+  "Q：微盘的行情数据从哪来？": "Q: Where does price data come from?",
+  "正规系统接路透/彭博行情源，或者镜像 MT4 实时报价。": "Legit systems use Reuters/Bloomberg feeds or mirror MT4 quotes.",
+  "Q：支持多少交易对？": "Q: How many instruments?",
+  "一般 20–50 个，后台可加。": "20-50 by default, extendable in admin.",
+  "Q：带 K 线图吗？": "Q: K-line charts included?",
+  "必须带 Lightweight Charts，和 TradingView 同源。": "Required - Lightweight Charts, the same engine as TradingView.",
+  "看微盘系统演示": "See Micro Platform Demo",
+  "微盘系统源码": "micro platform source",
+  "外汇微盘源码": "FX micro source",
+  "的核心和成本。": " - its core and cost.",
+  "公开价详询，常见 24 小时交付。若打包\"微盘 + 秒合约 + 永续 + 币币\"综合盘，公开价详询，常见 48 小时交付。": "Price on inquiry; typical 24-hour delivery. Bundle: price on inquiry; typical 48 hours.",
+  "贵金属": "Metals",
+  "XAU/USD 黄金、XAG/USD 白银": "XAU/USD gold, XAG/USD silver",
+  "最高": "Highest",
+  "能源": "Energy",
+  "WTI 原油、Brent 原油": "WTI, Brent crude",
+  "高": "High",
+  "外汇": "FX",
+  "EUR/USD、GBP/USD、USD/JPY": "EUR/USD, GBP/USD, USD/JPY",
+  "中": "Medium",
+  "股指": "Indices",
+  "US30、NAS100、SPX500": "US30, NAS100, SPX500",
+  "品类": "Category",
+  "主流交易对": "Major Pairs",
+  "用户热度": "Popularity"
+};
+    let enMode = localStorage.getItem('art_en') === '1';
+    function applyLang(m) {
+      document.getElementById('cl').textContent = m ? 'EN' : '中文';
+      if (!m) { location.reload(); return; }
+      const walk = el => {
+        const full = el.textContent.trim();
+        if (el.tagName !== 'MAIN' && el.tagName !== 'BODY' && !el.querySelector('a') && full && en[full]) {
+          el.innerHTML = en[full];
+          return;
+        }
+        [...el.childNodes].forEach(node => {
+          if (node.nodeType === 3) {
+            const t = node.textContent;
+            const ts = t.trim();
+            if (ts && en[ts]) { node.textContent = t.replace(ts, en[ts]); return; }
+            if (t.includes('\n')) {
+              node.textContent = t.split('\n').map(ln => {
+                const s = ln.trim();
+                return s && en[s] ? ln.replace(s, en[s]) : ln;
+              }).join('\n');
+            }
+          } else if (node.nodeType === 1 && !/^(SCRIPT|STYLE)$/.test(node.tagName)) walk(node);
+        });
+      };
+      walk(document.querySelector('main') || document.body);
+    }
+    function toggleLang() {
+      enMode = !enMode;
+      localStorage.setItem('art_en', enMode ? '1' : '0');
+      applyLang(enMode);
+    }
+    applyLang(enMode);
+  </script>
+</body>
+</html>

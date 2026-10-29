@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>永续合约源码核心模块拆解：资金费率、爆仓、标记价格怎么实现？ | Apex Engine</title>
+  <meta name="description" content="永续合约源码的三大核心：资金费率计算、爆仓逻辑、标记价格喂价。附带成本、技术栈和与秒合约的区别。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/06-perpetual-source.html">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #000; color: #f5f5f7; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    .bg-video-container { position: fixed; inset: 0; z-index: -30; overflow: hidden; pointer-events: none; }
+    .bg-video-container video { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: brightness(0.35) saturate(0.6); }
+    .bg-veil { position: fixed; inset: 0; z-index: -20; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%); }
+    nav { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); background: rgba(0,0,0,0.4); }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    main { max-width: 760px; margin: 0 auto; padding: 80px 24px; }
+    h1 { font-size: 38px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 20px; line-height: 1.2; }
+    h2 { font-size: 24px; font-weight: 600; margin-top: 44px; margin-bottom: 14px; }
+    p { color: #d1d1d6; font-size: 16px; margin-bottom: 16px; }
+    .lead { color: #86868b; font-size: 18px; margin-bottom: 36px; }
+    .glass { background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid rgba(255,255,255,0.08); }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 80px; }
+    a { color: #c9a961; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="bg-video-container"><video autoplay loop muted playsinline webkit-playsinline="true" poster="../poster.jpg"><source src="../background.mp4" type="video/mp4"></video></div>
+  <div class="bg-veil"></div>
+  <nav><a href="../index.html" class="brand">Apex <span>Engine</span></a><div style="display:flex;gap:12px;align-items:center;"><div onclick="toggleLang()" style="padding:8px 14px;border-radius:980px;background:rgba(255,255,255,0.08);cursor:pointer;font-size:13px;">🌐 <span id="cl">中文</span></div><a href="../index.html" style="font-size:14px; color:#86868b;">← Home</a></div></nav>
+  <main>
+    <h1>永续合约源码核心模块拆解</h1>
+    <p class="lead">资金费率、爆仓逻辑、标记价格——永续合约三大技术难点。</p>
+
+    <p>永续合约（Perpetual Swap）是交易所里技术门槛最高的品类。和秒合约等「短周期结算类产品」不同，永续合约带资金费率、可持仓数天，侧重持续性仓位管理。一套合格的<strong>永续合约源码</strong>必须把三个核心模块做对。</p>
+
+    <h2>一、资金费率（Funding Rate）</h2>
+    <div class="glass">
+      <p>资金费率每 8 小时结算一次，多头付空头或反之，目的是让永续合约价格锚定现货指数。</p>
+      <p><strong>计算公式：</strong>Funding Rate = Clamp( Premium Index + Interest Rate, -0.75%, 0.75% )</p>
+      <p>正规的<strong>永续合约搭建</strong>后台支持：自定义结算周期、费率上下限、白名单用户免费率。</p>
+    </div>
+
+    <h2>二、爆仓逻辑（Liquidation）</h2>
+    <p>爆仓是永续合约最容易出事故的地方。核心是三个价格：</p>
+    <p>- <strong>标记价格（Mark Price）：</strong>取多家主流公开指数平均，降低异常行情冲击<br>
+    - <strong>破产价格（Bankruptcy Price）：</strong>用户保证金亏完的价格<br>
+    - <strong>强平价格（Liquidation Price）：</strong>触发自动平仓的价格</p>
+    <p>做市机器人要在爆仓前主动接盘，不然保险基金亏空。这也是为什么正经系统要接真实盘口镜像。</p>
+
+    <h2>三、与秒合约的本质区别</h2>
+    <p>秒合约属于短周期结算类产品——到期按方向结算。永续合约侧重用户之间撮合，平台收取手续费。后台常见可配置项包括：</p>
+    <p>- <strong>行情展示模块：</strong>可配置（周期/深度/展示参数）<br>
+    - <strong>深度策略：</strong>可配置订单簿深度与报价策略（以合同为准）<br>
+    - <strong>熔断防护：</strong>极端行情自动拦截，隔绝穿仓风险</p>
+
+    <h2>四、成本与交付</h2>
+    <p>纯永续合约源码公开价详询。若为"秒合约 + 永续 + 币币"三合一综合盘，亦公开价详询。常见交付周期 48 小时，包含：撮合引擎、钱包、Admin、APP、做市工具。</p>
+
+    <h2>常见问题</h2>
+    <p><strong>Q：永续合约源码带 Insurance Fund 吗？</strong><br>
+    必须带。保险基金是极端行情下用户穿仓的最后一道防线。</p>
+    <p><strong>Q：支持多少倍杠杆？</strong><br>
+    默认 1–100x，后台可配。</p>
+    <p><strong>Q：支持全仓和逐仓吗？</strong><br>
+    正规源码两种都支持。</p>
+
+    <p style="margin-top: 40px; text-align: center;">
+      <a href="https://t.me/ApexEngine_ts" target="_blank" style="display: inline-block; background: #fff; color: #000; padding: 14px 32px; border-radius: 980px; font-weight: 500;">看永续合约后台演示</a>
+    </p>
+  </main>
+  <footer>© 2026 Apex Engine · v3.7</footer>
+              <script>
+    const en = {
+  "永续合约源码核心模块拆解": "Perpetual Futures Source Code: Core Modules Explained",
+  "一、资金费率（Funding Rate）": "1. Funding Rate",
+  "二、爆仓逻辑（Liquidation）": "2. Liquidation Logic",
+  "三、与秒合约的本质区别": "3. vs Binary Options",
+  "四、成本与交付": "4. Cost & Delivery",
+  "常见问题": "FAQ",
+  "资金费率、爆仓逻辑、标记价格——永续合约三大技术难点。": "Funding rate, liquidation logic, mark price - the three technical cores of perpetuals.",
+  "永续合约（Perpetual Swap）是交易所里技术门槛最高的品类。和秒合约等「短周期结算类产品」不同，永续合约带资金费率、可持仓数天，侧重持续性仓位管理。一套合格的永续合约源码必须把三个核心模块做对。": "Perpetual swap is among the highest-tech products on an exchange. Unlike short-cycle settlement products, perpetuals carry funding rates and multi-day positions with ongoing position management. A qualified perpetual source must get three core modules right.",
+  "资金费率每 8 小时结算一次，多头付空头或反之，目的是让永续合约价格锚定现货指数。": "Funding settles every 8 hours: longs pay shorts or vice versa, anchoring the contract price to the spot index.",
+  "计算公式：": "Formula: ",
+  "正规的永续合约搭建后台支持：自定义结算周期、费率上下限、白名单用户免费率。": "Legit perpetual platforms support: custom settlement cycles, rate caps, whitelist zero-fee users.",
+  "爆仓是永续合约最容易出事故的地方。核心是三个价格：": "Liquidation is where perpetuals go wrong. Three prices matter:",
+  "标记价格（Mark Price）：": "Mark Price: ",
+  "取多家主流公开指数平均，降低异常行情冲击": "Index average from major public sources, reduces abnormal-move impact",
+  "破产价格（Bankruptcy Price）：": "Bankruptcy Price: ",
+  "用户保证金亏完的价格": "Price where margin is fully depleted",
+  "强平价格（Liquidation Price）：": "Liquidation Price: ",
+  "触发自动平仓的价格": "Price that triggers auto-close",
+  "做市机器人要在爆仓前主动接盘，不然保险基金亏空。这也是为什么正经系统要接真实盘口镜像。": "Market-making bots must take the other side before liquidations, or the insurance fund drains. That is why legit systems mirror real order books.",
+  "秒合约属于短周期结算类产品——到期按方向结算。永续合约侧重用户之间撮合，平台收取手续费。后台常见可配置项包括：": "Binary options are short-cycle settlement products - settled by direction at expiry. Perpetuals focus on user-to-user matching; the platform earns fees. Common admin configurables include:",
+  "行情展示模块：": "Chart display module: ",
+  "可配置（周期/深度/展示参数）": "Configurable (interval / depth / display params)",
+  "深度策略：": "Depth strategy: ",
+  "可配置订单簿深度与报价策略（以合同为准）": "Configurable order-book depth and quoting strategies (per contract)",
+  "熔断防护：": "Circuit breaker: ",
+  "极端行情自动拦截，隔绝穿仓风险": "Auto-halt on extreme moves, no cascades",
+  "纯永续合约源码公开价详询。若为\"秒合约 + 永续 + 币币\"三合一综合盘，亦公开价详询。常见交付周期 48 小时，包含：撮合引擎、钱包、Admin、APP、做市工具。": "Perpetual source: price on inquiry. Binary+perp+spot bundle: price on inquiry. Typical 48-hour delivery: matching engine, wallet, admin, APP, market-making tools.",
+  "Q：永续合约源码带 Insurance Fund 吗？": "Q: Insurance fund included?",
+  "必须带。保险基金是极端行情下用户穿仓的最后一道防线。": "Required. It is the last line against user bankruptcy.",
+  "Q：支持多少倍杠杆？": "Q: Leverage supported?",
+  "默认 1–100x，后台可配。": "1-100x default, configurable.",
+  "Q：支持全仓和逐仓吗？": "Q: Cross and isolated margin?",
+  "正规源码两种都支持。": "Both, in legit source.",
+  "看永续合约后台演示": "See Perpetual Admin Demo",
+  "永续合约源码": "perpetual futures source",
+  "永续合约搭建": "perpetual platform setup",
+  "必须把三个核心模块做对。": "must get the three core modules right.",
+  "后台支持：自定义结算周期、费率上下限、白名单用户免费率。": "Admin supports: custom settlement cycles, rate caps, whitelist zero-fee users."
+};
+    let enMode = localStorage.getItem('art_en') === '1';
+    function applyLang(m) {
+      document.getElementById('cl').textContent = m ? 'EN' : '中文';
+      if (!m) { location.reload(); return; }
+      const walk = el => {
+        const full = el.textContent.trim();
+        if (el.tagName !== 'MAIN' && el.tagName !== 'BODY' && !el.querySelector('a') && full && en[full]) {
+          el.innerHTML = en[full];
+          return;
+        }
+        [...el.childNodes].forEach(node => {
+          if (node.nodeType === 3) {
+            const t = node.textContent;
+            const ts = t.trim();
+            if (ts && en[ts]) { node.textContent = t.replace(ts, en[ts]); return; }
+            if (t.includes('\n')) {
+              node.textContent = t.split('\n').map(ln => {
+                const s = ln.trim();
+                return s && en[s] ? ln.replace(s, en[s]) : ln;
+              }).join('\n');
+            }
+          } else if (node.nodeType === 1 && !/^(SCRIPT|STYLE)$/.test(node.tagName)) walk(node);
+        });
+      };
+      walk(document.querySelector('main') || document.body);
+    }
+    function toggleLang() {
+      enMode = !enMode;
+      localStorage.setItem('art_en', enMode ? '1' : '0');
+      applyLang(enMode);
+    }
+    applyLang(enMode);
+  </script>
+</body>
+</html>

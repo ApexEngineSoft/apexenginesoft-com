@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="title">交易所源码搭建完全指南：2026 年开一个加密货币交易所要多少钱？ | Apex Engine</title>
+  <meta name="description" data-i18n="desc" content="2026 年开一个交易所要多少钱？交易所源码、秒合约源码、永续合约源码、微盘系统、撮合引擎、冷钱包、做市机器人——一篇讲透成本、技术栈、交付周期和避坑点。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/04-exchange-source-guide.html">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif; background: #000; color: #f5f5f7; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    .bg-video-container { position: fixed; inset: 0; z-index: -30; overflow: hidden; pointer-events: none; }
+    .bg-video-container video { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: brightness(0.35) saturate(0.6); }
+    .bg-veil { position: fixed; inset: 0; z-index: -20; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%); }
+    nav { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); background: rgba(0,0,0,0.4); }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    .lang-switch { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 980px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: #e8e8f0; cursor: pointer; }
+    main { max-width: 760px; margin: 0 auto; padding: 80px 24px; }
+    h1 { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 20px; line-height: 1.2; }
+    h2 { font-size: 26px; font-weight: 600; margin-top: 48px; margin-bottom: 16px; }
+    h3 { font-size: 18px; font-weight: 600; margin-top: 28px; margin-bottom: 12px; }
+    p { color: #d1d1d6; font-size: 16px; margin-bottom: 16px; }
+    .lead { color: #86868b; font-size: 18px; margin-bottom: 40px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 14px; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { color: #c9a961; font-weight: 600; }
+    td { color: #d1d1d6; }
+    .glass { background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid rgba(255,255,255,0.08); }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 80px; }
+    a { color: #c9a961; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="bg-video-container"><video autoplay loop muted playsinline webkit-playsinline="true" poster="../poster.jpg"><source src="../background.mp4" type="video/mp4"></video></div>
+  <div class="bg-veil"></div>
+  <nav>
+    <a href="../index.html" class="brand">Apex <span>Engine</span></a>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <div class="lang-switch" onclick="cycleLang()">🌐 <span id="curLang">中文</span></div>
+      <a href="../index.html" style="font-size:14px; color:#86868b;">← Home</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1 data-i18n="h1">交易所源码搭建完全指南：2026 年开一个加密货币交易所要多少钱？</h1>
+    <p class="lead" data-i18n="lead">从外汇微盘到交易所综合系统、旗舰综合、机构席位与授权储蓄——一篇讲透选型、技术栈、交付周期和避坑点。公开价详询。</p>
+
+    <p data-i18n="p1">如果你在搜索"交易所源码""秒合约搭建""永续合约源码"，大概率你已经过了"要不要做"的阶段，正在对比：找外包定制、买白标系统、还是拿开源源码自己部署。这篇文章把三个方向的真实成本、交付周期、坑点全部拆开讲。</p>
+
+    <h2 data-i18n="h2_1">一、开一个交易所到底要多少钱？</h2>
+    <p data-i18n="p2">2026 年按交付形态大致分三档（公开价详询）：</p>
+    <table>
+      <tr><th data-i18n="th1">方案</th><th data-i18n="th2">价格区间</th><th data-i18n="th3">交付周期</th><th data-i18n="th4">适合谁</th></tr>
+      <tr><td data-i18n="td1_1">白标/源码交付</td><td data-i18n="td1_2">公开价详询</td><td data-i18n="td1_3">48 小时–2 周</td><td data-i18n="td1_4">运营团队、小团队、海外公社</td></tr>
+      <tr><td data-i18n="td2_1">半定制开发</td><td data-i18n="td2_2">公开价详询</td><td data-i18n="td2_3">8–12 周</td><td data-i18n="td2_4">有品牌诉求的中型平台</td></tr>
+      <tr><td data-i18n="td3_1">全定制从零开发</td><td data-i18n="td3_2">公开价详询</td><td data-i18n="td3_3">6–12 个月</td><td data-i18n="td3_4">持牌机构、大企业</td></tr>
+    </table>
+    <p data-i18n="p3">绝大多数运营方选第一档：拿 <strong>100% 源码</strong>，自己服务器部署，48 小时跑通。这也是我们 Apex Engine 做的事——不租 license，不抽成，代码物理交付。</p>
+
+    <h2 data-i18n="h2_2">二、五套主流系统，按打法选</h2>
+    <h3 data-i18n="h3_1">1. 秒合约 / 微盘系统</h3>
+    <p data-i18n="p4">180 秒、240 秒、360 秒买涨买跌，外汇黄金原油主流对。后台含 ops console、风控参数与做市工具（以合同为准）。<strong>秒合约源码</strong>一般包含：前端 H5、Admin 后台、做市机器人、OTP 验证、国际短信。</p>
+    <h3 data-i18n="h3_2">2. 币币综合交易所</h3>
+    <p data-i18n="p5">现货撮合 + 衍生品模块 + 多链钱包。已接入 Web3 钱包、TRC20/ERC20/BSC 多链充提。<strong>现货系统源码</strong>的核心是撮合引擎和钱包模块。</p>
+    <h3 data-i18n="h3_3">3. 永续合约旗舰版</h3>
+    <p data-i18n="p6">全套高奢 UI，集成秒合约、永续、币币现货、自发币、OTP、独立客服，新增全球股票、社群交流、极速闪兑、AI 理财。<strong>永续合约源码</strong>的关键是资金费率计算、爆仓逻辑、标记价格喂价。</p>
+    <h3 data-i18n="h3_4">4. 机构席位（Institutional Desk）</h3>
+    <p data-i18n="p7">多席位后台与机构级运维能力，面向团队协作与私有化部署。<strong>机构席位源码</strong>的核心是 ops console、风控参数与做市工具。</p>
+    <h3 data-i18n="h3_5">5. 授权储蓄</h3>
+    <p data-i18n="p7b">储蓄/理财类产品软件模块。规则与产品参数可配置；源码或私有化交付（按合同）。仅软件技术交付，资金与收益由客户自行运营。公开价详询。</p>
+
+    <h2 data-i18n="h2_3">三、技术栈：为什么撮合引擎必须用 C++/Go？</h2>
+    <div class="glass">
+      <p data-i18n="p8"><strong>关键数字：</strong>单节点 10,000+ TPS，微秒级清算。</p>
+      <p data-i18n="p9">Java/Go 写的撮合引擎在万级并发下会出现 GC 停顿，导致用户下单卡单、行情延迟。正经交易所的撮合层一定是 <strong>C++ 内存级架构</strong>，订单簿在内存里维护，MySQL 只做持久化，Redis Cluster 做分布式缓存。</p>
+    </div>
+    <p data-i18n="p10">如果你拿到的"交易所源码"是 PHP 或纯 Node.js 写的撮合层，基本可以判定是玩具——并发上去必崩。</p>
+
+    <h2 data-i18n="h2_4">四、资金链路：为什么必须直通冷钱包？</h2>
+    <p data-i18n="p11">这是老板最关心的安全问题。正规的 <strong>交易所搭建</strong> 资金链路是：</p>
+    <p data-i18n="p12">1. 散户入金 → 链上多节点实时扫块 → 生成独立充值地址<br>2. 大额资产 → 自动归集到你专属私钥冷钱包<br>3. 技术团队 → 零触碰权限，你可以现场用 100 USDT 测试链上验真</p>
+    <p data-i18n="p13">凡是让你把币放到开发商热钱包里"托管"的，一律不要碰——那是盘口资金池，不是你的。</p>
+
+    <h2 data-i18n="h2_5">五、避坑清单：买源码前必问的 5 个问题</h2>
+    <p data-i18n="q1"><strong>Q1：代码里有暗门吗？</strong><br>绝对没有。全部数据库、撮合引擎、钱包模块部署在你的独立服务器，你可以安排技术团队全量抓包审计与反编译。</p>
+    <p data-i18n="q2"><strong>Q2：新盘深度与做市怎么配？</strong><br>可对接主流公开行情深度；做市工具与风控参数可配置（以合同为准）。演示请联系 Telegram 领取。</p>
+    <p data-i18n="q3"><strong>Q3：你们失联后能自己接管吗？</strong><br>交付一键部署脚本、Dockerfile、数据库字典与运维文档，普通后端工程师即可无缝接手。</p>
+    <p data-i18n="q4"><strong>Q4：是物理交付还是远程 license？</strong><br>物理交付。100% 纯源码，无加密、无 obfuscate、无 license server 回连。</p>
+    <p data-i18n="q5"><strong>Q5：多久能跑通？</strong><br>48 小时。逾期未跑通全额退款。</p>
+
+    <h2 data-i18n="h2_6">六、成本对比：白标 vs 全定制</h2>
+    <table>
+      <tr><th data-i18n="th5">维度</th><th data-i18n="th6">白标源码交付</th><th data-i18n="th7">全定制开发</th></tr>
+      <tr><td data-i18n="td4_1">成本</td><td data-i18n="td4_2">公开价详询</td><td data-i18n="td4_3">公开价详询</td></tr>
+      <tr><td data-i18n="td5_1">周期</td><td data-i18n="td5_2">48 小时</td><td data-i18n="td5_3">6–12 个月</td></tr>
+      <tr><td data-i18n="td6_1">源码归属</td><td data-i18n="td6_2">100% 归你</td><td data-i18n="td6_3">100% 归你</td></tr>
+      <tr><td data-i18n="td7_1">二次开发</td><td data-i18n="td7_2">支持</td><td data-i18n="td7_3">支持</td></tr>
+      <tr><td data-i18n="td8_1">适合阶段</td><td data-i18n="td8_2">快速上线验证</td><td data-i18n="td8_3">持牌合规运营</td></tr>
+    </table>
+
+    <h2 data-i18n="faq_title">常见问题 FAQ</h2>
+    <h3 data-i18n="faq1_q">交易所源码多少钱一套？</h3>
+    <p data-i18n="faq1_a">公开价详询。具体视功能模块（秒合约/永续/币币/股票）、是否带 APP、是否包含做市工具和冷钱包模块而定。</p>
+    <h3 data-i18n="faq2_q">开一个交易所需要什么资质？</h3>
+    <p data-i18n="faq2_a">合规由买方自行办理；我方仅软件交付。</p>
+    <h3 data-i18n="faq3_q">秒合约和永续合约有什么区别？</h3>
+    <p data-i18n="faq3_a">秒合约是 180/240/360 秒短线决胜，偏赌运气；永续合约是带资金费率的衍生品，持仓时间自由，偏专业交易。两套系统可以打包在一个平台里。</p>
+    <h3 data-i18n="faq4_q">交易所源码带后台吗？</h3>
+    <p data-i18n="faq4_a">正规交付一定带 Admin 后台：用户管理、风控、资金、做市、返佣、日志全模块。如果只给前端不给后台，等于没交付。</p>
+
+    <p style="margin-top: 48px; text-align: center;">
+      <a href="https://t.me/ApexEngine_ts" target="_blank" style="display: inline-block; background: #fff; color: #000; padding: 14px 32px; border-radius: 980px; font-weight: 500;" data-i18n="cta">详询</a>
+    </p>
+  </main>
+
+  <footer>© 2026 Apex Engine · 100% 源码物理交付 · 48 小时极速上线<br><span style="font-size:10px;color:#48484d;">v3.7</span></footer>
+
+  <script>
+    const dict = {
+      zh: { title:'交易所源码搭建完全指南：2026 年开一个加密货币交易所要多少钱？ | Apex Engine', desc:'2026 年开一个交易所要多少钱？交易所源码、秒合约源码、永续合约源码、微盘系统、撮合引擎、冷钱包、做市机器人——一篇讲透成本、技术栈、交付周期和避坑点。', h1:'交易所源码搭建完全指南：2026 年开一个加密货币交易所要多少钱？', lead:'从外汇微盘到交易所综合系统、旗舰综合、机构席位与授权储蓄——一篇讲透选型、技术栈、交付周期和避坑点。公开价详询。', p1:'如果你在搜索"交易所源码""秒合约搭建""永续合约源码"，大概率你已经过了"要不要做"的阶段，正在对比：找外包定制、买白标系统、还是拿开源源码自己部署。这篇文章把三个方向的真实成本、交付周期、坑点全部拆开讲。', h2_1:'一、开一个交易所到底要多少钱？', p2:'2026 年按交付形态大致分三档（公开价详询）：', th1:'方案', th2:'价格区间', th3:'交付周期', th4:'适合谁', td1_1:'白标/源码交付', td1_2:'公开价详询', td1_3:'48 小时–2 周', td1_4:'运营团队、小团队、海外公社', td2_1:'半定制开发', td2_2:'公开价详询', td2_3:'8–12 周', td2_4:'有品牌诉求的中型平台', td3_1:'全定制从零开发', td3_2:'公开价详询', td3_3:'6–12 个月', td3_4:'持牌机构、大企业', p3:'绝大多数运营方选第一档：拿 100% 源码，自己服务器部署，48 小时跑通。这也是我们 Apex Engine 做的事——不租 license，不抽成，代码物理交付。', h2_2:'二、五套主流系统，按打法选', h3_1:'1. 秒合约 / 微盘系统', p4:'180 秒、240 秒、360 秒买涨买跌，外汇黄金原油主流对。后台含 ops console、风控参数与做市工具（以合同为准）。秒合约源码一般包含：前端 H5、Admin 后台、做市机器人、OTP 验证、国际短信。', h3_2:'2. 币币综合交易所', p5:'现货撮合 + 衍生品模块 + 多链钱包。已接入 Web3 钱包、TRC20/ERC20/BSC 多链充提。现货系统源码的核心是撮合引擎和钱包模块。', h3_3:'3. 永续合约旗舰版', p6:'全套高奢 UI，集成秒合约、永续、币币现货、自发币、OTP、独立客服，新增全球股票、社群交流、极速闪兑、AI 理财。永续合约源码的关键是资金费率计算、爆仓逻辑、标记价格喂价。', h3_4:'4. 机构席位（Institutional Desk）', p7:'多席位后台与机构级运维能力，面向团队协作与私有化部署。机构席位源码的核心是 ops console、风控参数与做市工具。', h3_5:'5. 授权储蓄', p7b:'储蓄/理财类产品软件模块。规则与产品参数可配置；源码或私有化交付（按合同）。仅软件技术交付，资金与收益由客户自行运营。公开价详询。', h2_3:'三、技术栈：为什么撮合引擎必须用 C++/Go？', p8:'关键数字：单节点 10,000+ TPS，微秒级清算。', p9:'Java/Go 写的撮合引擎在万级并发下会出现 GC 停顿，导致用户下单卡单、行情延迟。正经交易所的撮合层一定是 C++ 内存级架构，订单簿在内存里维护，MySQL 只做持久化，Redis Cluster 做分布式缓存。', p10:'如果你拿到的"交易所源码"是 PHP 或纯 Node.js 写的撮合层，基本可以判定是玩具——并发上去必崩。', h2_4:'四、资金链路：为什么必须直通冷钱包？', p11:'这是老板最关心的安全问题。正规的交易所搭建资金链路是：', p12:'1. 散户入金 → 链上多节点实时扫块 → 生成独立充值地址<br>2. 大额资产 → 自动归集到你专属私钥冷钱包<br>3. 技术团队 → 零触碰权限，你可以现场用 100 USDT 测试链上验真', p13:'凡是让你把币放到开发商热钱包里"托管"的，一律不要碰——那是盘口资金池，不是你的。', h2_5:'五、避坑清单：买源码前必问的 5 个问题', q1:'Q1：代码里有暗门吗？绝对没有。全部数据库、撮合引擎、钱包模块部署在你的独立服务器，你可以安排技术团队全量抓包审计与反编译。', q2:'Q2：新盘深度与做市怎么配？可对接主流公开行情深度；做市工具与风控参数可配置（以合同为准）。演示请联系 Telegram 领取。', q3:'Q3：你们失联后能自己接管吗？交付一键部署脚本、Dockerfile、数据库字典与运维文档，普通后端工程师即可无缝接手。', q4:'Q4：是物理交付还是远程 license？物理交付。100% 纯源码，无加密、无 obfuscate、无 license server 回连。', q5:'Q5：多久能跑通？48 小时。逾期未跑通全额退款。', h2_6:'六、成本对比：白标 vs 全定制', th5:'维度', th6:'白标源码交付', th7:'全定制开发', td4_1:'成本', td4_2:'公开价详询', td4_3:'公开价详询', td5_1:'周期', td5_2:'48 小时', td5_3:'6–12 个月', td6_1:'源码归属', td6_2:'100% 归你', td6_3:'100% 归你', td7_1:'二次开发', td7_2:'支持', td7_3:'支持', td8_1:'适合阶段', td8_2:'快速上线验证', td8_3:'持牌合规运营', faq_title:'常见问题 FAQ', faq1_q:'交易所源码多少钱一套？', faq1_a:'公开价详询。具体视功能模块（秒合约/永续/币币/股票）、是否带 APP、是否包含做市工具和冷钱包模块而定。', faq2_q:'开一个交易所需要什么资质？', faq2_a:'合规由买方自行办理；我方仅软件交付。', faq3_q:'秒合约和永续合约有什么区别？', faq3_a:'秒合约是 180/240/360 秒短线决胜，偏赌运气；永续合约是带资金费率的衍生品，持仓时间自由，偏专业交易。两套系统可以打包在一个平台里。', faq4_q:'交易所源码带后台吗？', faq4_a:'正规交付一定带 Admin 后台：用户管理、风控、资金、做市、返佣、日志全模块。如果只给前端不给后台，等于没交付。', cta:'详询' },
+      en: { title:'Crypto Exchange Source Code Guide: How Much to Launch in 2026? | Apex Engine', desc:'How much to launch a crypto exchange in 2026? Exchange script, binary options, perpetuals, matching engine, cold wallet, market-making — cost, stack, timeline, pitfalls.', h1:'Crypto Exchange Source Code: How Much in 2026?', lead:'From Forex Short-Cycle to Exchange Suite, Flagship Suite, Institutional Desk and Authorized Savings — selection, stack, timeline, pitfalls. Price on inquiry.', p1:'If you are searching for "crypto exchange script" or "perpetual exchange source code", you are past the "should I do it" stage and comparing: custom dev, white label, or open-source deploy. This article breaks down all three.', h2_1:'1. How Much to Launch an Exchange?', p2:'2026 delivery models, three tiers (price on inquiry):', th1:'Option', th2:'Price', th3:'Timeline', th4:'Best For', td1_1:'White-label / Source', td1_2:'Price on inquiry', td1_3:'48 hrs – 2 weeks', td1_4:'Operators, small teams, overseas guilds', td2_1:'Semi-custom', td2_2:'Price on inquiry', td2_3:'8–12 weeks', td2_4:'Branded mid-tier platforms', td3_1:'Fully custom', td3_2:'Price on inquiry', td3_3:'6–12 months', td3_4:'Licensed institutions', p3:'Most operators pick tier one: 100% source code, deploy on your own server, live in 48 hours. That is what Apex Engine does — no license, no revenue share, physical source delivery.', h2_2:'2. Five Platforms to Choose', h3_1:'1. Binary Options / Micro', p4:'180/240/360-second up/down, FX, gold, oil. Ops console, risk parameters and market-making tools (per contract). Binary script includes: frontend H5, admin, market-making tools, OTP, SMS.', h3_2:'2. Spot Exchange', p5:'Spot matching + derivatives modules + multi-chain wallet. Web3 wallet, TRC20/ERC20/BSC. The core of Spot Desk source is matching engine and wallet.', h3_3:'3. Perpetual Flagship', p6:'Premium dark-gold UI, binary, perpetual, spot, token minting, OTP, support, global stocks, social chat, instant swap, AI yield. Key: funding rate, liquidation logic, mark price.', h3_4:'4. Institutional Desk', p7:'Multi-seat backend and institutional ops for team workflows and private deployment. Core: ops console, risk parameters, market-making tools.', h3_5:'5. Authorized Savings', p7b:'Savings / wealth-product software module. Rules and product parameters configurable; source or private deploy (per contract). Software delivery only — funds and returns operated by the client. Price on inquiry.', h2_3:'3. Why C++/Go Matching Engine?', p8:'Key number: 10,000+ TPS per node, microsecond order book.', p9:'Java/Go engines suffer GC pauses at 10k+ concurrency. Real exchanges use C++ in-memory architecture — order book in RAM, MySQL for persistence, Redis Cluster for cache.', p10:'If your "exchange source" uses PHP or pure Node.js for matching, it is a toy — it will crash under load.', h2_4:'4. Why Direct Cold Wallet Settlement?', p11:'The #1 security question. Legit exchange fund flow:', p12:'1. User deposit → multi-node block scan → unique address<br>2. Large balances → auto-sweep to your hardware cold wallet<br>3. Vendor → zero access, verify with a live 100 USDT test', p13:'Never trust a vendor who holds your funds in their hot wallet — that is their book, not yours.', h2_5:'5. 5 Questions to Ask Before Buying', q1:'Q1: Any backdoors? None. Everything runs on your servers. Your team can packet-capture and reverse-engineer the full stack.', q2:'Q2: How are depth and market-making configured? Can connect to major public market depth; tools and risk parameters configurable (per contract). Contact Telegram for a demo.', q3:'Q3: Can I take over if you disappear? One-click deploy scripts, Dockerfile, DB schema, ops docs. Any backend engineer can maintain it.', q4:'Q4: Physical delivery or remote license? Physical. 100% pure source, no encryption, no obfuscation, no license callback.', q5:'Q5: How fast? 48 hours. Full refund if missed.', h2_6:'6. Cost Comparison: White-label vs Custom', th5:'Dimension', th6:'Source Delivery', th7:'Fully Custom', td4_1:'Cost', td4_2:'Price on inquiry', td4_3:'Price on inquiry', td5_1:'Timeline', td5_2:'48 hours', td5_3:'6–12 months', td6_1:'Source Ownership', td6_2:'100% yours', td6_3:'100% yours', td7_1:'Customization', td7_2:'Yes', td7_3:'Yes', td8_1:'Best For', td8_2:'Fast launch validation', td8_3:'Licensed operations', faq_title:'FAQ', faq1_q:'How much does exchange source code cost?', faq1_a:'Price on inquiry. Depends on modules (binary/perpetual/spot/stocks), whether an app is included, and market-making / cold-wallet modules.', faq2_q:'What license do I need to launch?', faq2_a:'Compliance is handled by the buyer; we deliver software only.', faq3_q:'Binary vs perpetual, what is the difference?', faq3_a:'Binary is 180/240/360-second short-term bet. Perpetual is a leveraged derivative with funding rate, flexible hold time. Both can be bundled.', faq4_q:'Does exchange source include admin?', faq4_a:'Legit delivery always includes full admin: users, risk, funds, market-making, commissions, logs. Frontend only = no delivery.', cta:'Inquire' },
+      ja: { title:'取引所ソースコード完全ガイド：2026年に開設費用はいくら？ | Apex Engine', desc:'取引所ソース、秒バイナリー、永久契約、マッチングエンジン、コールドウォレット、做市ボット——費用・技術スタック・納期・注意点を解説。', h1:'取引所ソースコード完全ガイド：2026年に開設費用はいくら？', lead:'バイナリーから永久契約まで、費用・技術スタック・納期・注意点を一篇で解説。', p1:'「取引所ソース」「秒バイナリー構築」「永久契約ソース」を検索しているなら、もう「やるかやらないか」の段階は過ぎています。3つの選択肢の実際のコストと納期を解説します。', h2_1:'1. 取引所開設にいくらかかる？', p2:'2026年の納品形態はおおよそ3段階（価格はお問い合わせ）：', th1:'プラン', th2:'価格帯', th3:'納期', th4:'対象', td1_1:'ホワイトラベル/ソース', td1_2:'価格はお問い合わせ', td1_3:'48時間〜2週間', td1_4:'運営者・少人数チーム・海外ギルド', td2_1:'セミカスタム', td2_2:'価格はお問い合わせ', td2_3:'8〜12週間', td2_4:'ブランド重視の中規模', td3_1:'フルカスタム', td3_2:'価格はお問い合わせ', td3_3:'6〜12ヶ月', td3_4:'ライセンス機関・大企業', p3:'ほとんどの運営者は第1段階を選びます。100%ソースを自分のサーバーにデプロイ、48時間で稼働。Apex Engineはライセンス料なし、売上シェアなし、物理納品のみ。', h2_2:'2. 5種の主要システム', h3_1:'1. バイナリー/マイクロ', p4:'180/240/360秒の上下、FX・金・原油。ops console・リスクパラメータ・做市ツール（契約範囲）。フロントエンドH5、管理画面、做市ツール、OTP、SMS込み。', h3_2:'2. スポット取引所', p5:'バイナリーポンプ + 永久契約チャート自在 + ワンクリックトークン発行 + 独自K線。Web3ウォレット、TRC20/ERC20/BSC対応。核心はマッチングエンジンとウォレット。', h3_3:'3. 永久契約フラッグシップ', p6:'高級ダークゴールドUI、バイナリー・永久・現物・トークン発行・OTP・サポート・株式・SNS・即時スワップ・AI資産運用。キーは資金料率・強制決済・マーク価格。', h3_4:'4. Institutional Desk（機関席）', p7:'マルチシート管理と機関向け運用。チーム協業とプライベート展開向け。核心はops console・リスクパラメータ・做市ツール。', h3_5:'5. 認可セービング', p7b:'貯蓄・資産運用系プロダクトのソフトモジュール。ルールと商品パラメータは設定可能。ソースまたはプライベート納品（契約通り）。ソフト技術納品のみで、資金と収益は顧客側が運用。価格はお問い合わせ。', h2_3:'3. なぜマッチングエンジンはC++/Goなのか？', p8:'キー数字：1ノード10,000+TPS、マイクロ秒オーダーブック。', p9:'Java/Goエンジンは数万同時接続でGC停止が発生。本物の取引所はC++メモリ内アーキテクチャ。オーダーブックはRAM、MySQLは永続化のみ、Redis Cluster。', p10:'PHPや純Node.jsでマッチング層を書いた「取引所ソース」はおもちゃ。負荷がかかれば必ずクラッシュします。', h2_4:'4. なぜコールドウォレット直結なのか？', p11:'運営者が最も気にするセキュリティ。正規の資金フロー：', p12:'1. ユーザー入金 → マルチノードでリアルタイムスキャン → 個別アドレス<br>2. 大口資産 → 自動的にハードウェアウォレットへ<br>3. ベンダー → アクセス権ゼロ、100 USDTで実地テスト可', p13:'ベンダーがホットウォレットで「托管」するところは絶対に避けてください。それは彼らの資金プールです。', h2_5:'5. 購入前に必ず聞く5つの質問', q1:'Q1：バックドアはある？ありません。すべてお客様サーバーに配置。全量パケットキャプチャ・逆解析可能。', q2:'Q2：深さ・做市はどう設定する？主要公開板深さに接続可。做市ツールとリスクパラメータは設定可能（契約範囲）。デモはTelegramで請求。', q3:'Q3：連絡が途絶えたら自分で運用できる？デプロイスクリプト・Dockerfile・DB定義・運用ドキュメント一式納品。普通のエンジニアで引き継ぎ可能。', q4:'Q4：物理納品？リモートライセンス？物理納品。100%純ソース、暗号化なし、難読化なし、ライセンス接続なし。', q5:'Q5：納期は？48時間。遅延全額返金。', h2_6:'6. 費用比較：ホワイトラベル vs フルカスタム', th5:'項目', th6:'ソース納品', th7:'フルカスタム', td4_1:'費用', td4_2:'価格はお問い合わせ', td4_3:'価格はお問い合わせ', td5_1:'納期', td5_2:'48時間', td5_3:'6〜12ヶ月', td6_1:'ソース帰属', td6_2:'100%お客様', td6_3:'100%お客様', td7_1:'カスタマイズ', td7_2:'可', td7_3:'可', td8_1:'向いている段階', td8_2:'迅速なローンチ検証', td8_3:'ライセンス運営', faq_title:'FAQ', faq1_q:'取引所ソースはいくら？', faq1_a:'公開価格はお問い合わせ。モジュール（バイナリー/永久/現物/株式）、APP、做市ツール、コールドウォレット有無で変動。', faq2_q:'開設に必要なライセンスは？', faq2_a:'コンプライアンスは購入者側で対応；当社はソフトウェア納品のみ。', faq3_q:'バイナリーと永久契約の違いは？', faq3_a:'バイナリーは180/240/360秒の短期決済。永久契約は資金料率付きデリバティブ。両方ワンプラットフォームに統合可能。', faq4_q:'管理画面は付いてる？', faq4_a:'正規納品はフルAdmin画面付き：ユーザー・リスク・資金・做市・紹介・ログ。フロントだけでは納品とは言いません。', cta:'お問い合わせ' },
+      de: { title:'Krypto-Börse Quellcode Guide: Was kostet ein Launch 2026? | Apex Engine', desc:'Was kostet eine Krypto-Börse 2026? Exchange-Script, Binäroptionen, Perpetuals, Matching-Engine, Cold-Wallet, Market-Making — Kosten, Stack, Timeline, Fallstricke.', h1:'Krypto-Börse Quellcode: Was kostet 2026?', lead:'Von Forex Short-Cycle bis Exchange Suite, Flagship Suite, Institutional Desk und Autorisierte Ersparnisse — Auswahl, Stack, Lieferzeit, Fallstricke. Preis auf Anfrage.', p1:'Wenn Sie nach "crypto exchange script" oder "perpetual exchange source code" suchen, sind Sie über das "soll ich?"-Stadium hinaus. Dieser Artikel vergleicht Custom-Entwicklung, White-Label und Quellcode-Lieferung.', h2_1:'1. Was kostet eine Börse?', p2:'2026 Liefermodelle, 3 Stufen (Preis auf Anfrage):', th1:'Option', th2:'Preis', th3:'Zeit', th4:'Für wen', td1_1:'White-Label / Quellcode', td1_2:'Preis auf Anfrage', td1_3:'48 Std – 2 Wochen', td1_4:'Trader, kleine Teams, Übersee-Gilden', td2_1:'Semi-Custom', td2_2:'Preis auf Anfrage', td2_3:'8–12 Wochen', td2_4:'Marken-Plattformen', td3_1:'Voll-Custom', td3_2:'Preis auf Anfrage', td3_3:'6–12 Monate', td3_4:'Lizenzierte Institutionen', p3:'Die meisten Operator wählen Stufe 1: 100% Quellcode, auf eigenem Server, Live in 48 Stunden. Das ist was Apex Engine macht — keine Lizenz, kein Revenue-Share, physische Lieferung.', h2_2:'2. Fünf Plattformen', h3_1:'1. Binäroptionen / Micro', p4:'180/240/360-Sekunden, FX, Gold, Öl. Ops-Konsole, Risikoparameter und Market-Making-Tools (laut Vertrag). Frontend H5, Admin, Market-Making-Tools, OTP, SMS.', h3_2:'2. Spot-Börse', p5:'Binär-Pump + glatte Perpetual-Charts + Ein-Klick-Token + eigene K-Linien. Web3-Wallet, TRC20/ERC20/BSC. Kern: Matching-Engine und Wallet.', h3_3:'3. Perpetual Flagship', p6:'Premium Dark-Gold-UI, Binär, Perpetual, Spot, Token, OTP, Support, Aktien, Social, Instant-Swap, AI-Yield. Kern: Funding-Rate, Liquidation, Mark-Preis.', h3_4:'4. Institutional Desk', p7:'Multi-Seat-Backend und institutionelle Ops für Teams und Private Deployment. Kern: ops console, Risikoparameter, Market-Making-Tools.', h3_5:'5. Autorisierte Ersparnisse', p7b:'Spar-/Vermögensprodukt-Softwaremodul. Regeln und Produktparameter konfigurierbar; Quellcode oder Private Deploy (laut Vertrag). Nur Software-Techniklieferung — Mittel und Erträge betreibt der Kunde. Preis auf Anfrage.', h2_3:'3. Warum C++/Go Matching-Engine?', p8:'Schlüsselzahl: 10.000+ TPS pro Knoten, Mikrosekunden Orderbuch.', p9:'Java/Go-Engines haben GC-Pausen bei 10k+ Parallelverbindungen. Echte Börsen nutzen C++ In-Memory — Orderbuch im RAM, MySQL nur Persistenz, Redis Cluster.', p10:'Wenn Ihre "Börsen-Quelle" PHP oder reines Node.js für das Matching nutzt, ist es ein Spielzeug — es stürzt ab.', h2_4:'4. Warum direktes Cold-Wallet-Settlement?', p11:'Die #1 Sicherheitsfrage. Legitimer Geldfluss:', p12:'1. User-Einzahlung → Multi-Node-Scan → eigene Adresse<br>2. Großbeträge → Auto-Sweep in Hardware-Wallet<br>3. Vendor → Null Zugriff, Live-Test mit 100 USDT', p13:'Nie einem Vendor vertrauen, der Ihre Gelder im Hot-Wallet "verwaltet" — das ist seine Kasse, nicht Ihre.', h2_5:'5. 5 Fragen vor dem Kauf', q1:'Q1: Backdoors? Keine. Alles auf Ihren Servern. Ihr Team kann den vollen Stack packettracen.', q2:'Q2: Sieht eine neue Börse leer aus? Anbindung an öffentliche Markttiefe möglich. Millionen Order-tiefe am Tag eins.', q3:'Q3: Kann ich übernehmen wenn Sie verschwinden? Deploy-Scripts, Dockerfile, DB-Schema, Doku. Jeder Backend-Ingenieur kann.', q4:'Q4: Physisch oder Remote-Lizenz? Physisch. 100% reiner Quellcode, keine Verschlüsselung, kein Callback.', q5:'Q5: Wie schnell? 48 Stunden. Volle Rückerstattung bei Verspätung.', h2_6:'6. Kostenvergleich: White-Label vs Custom', th5:'Dimension', th6:'Quellcode', th7:'Voll-Custom', td4_1:'Kosten', td4_2:'Price on inquiry', td4_3:'Price on inquiry', td5_1:'Zeit', td5_2:'48 Stunden', td5_3:'6–12 Monate', td6_1:'Quellcode', td6_2:'100% Ihr', td6_3:'100% Ihr', td7_1:'Anpassung', td7_2:'Ja', td7_3:'Ja', td8_1:'Geeignet für', td8_2:'Schneller Launch', td8_3:'Lizenzierter Betrieb', faq_title:'FAQ', faq1_q:'Was kostet Börsen-Quellcode?', faq1_a:'Preis auf Anfrage. Abhängig von Modulen (Binär/Perpetual/Spot/Aktien), APP, Market-Making-Tools, Cold-Wallet.', faq2_q:'Welche Lizenz brauche ich?', faq2_a:'Compliance liegt beim Käufer; wir liefern ausschließlich Software.', faq3_q:'Binär vs Perpetual?', faq3_a:'Binär ist 180/240/360-Sekunden-Wette. Perpetual ist gehebelte Derivate mit Funding-Rate. Beide bündelbar.', faq4_q:'Admin-Panel dabei?', faq4_a:'Legitime Lieferung immer mit vollem Admin: User, Risk, Funds, Market-Making, Provisionen, Logs. Frontend allein = keine Lieferung.', cta:'Anfragen' }
+    };
+
+    const langs = ['zh','en','ja','de'];
+    const langNames = {zh:'中文',en:'English',ja:'日本語',de:'Deutsch'};
+    let curLang = localStorage.getItem('art_lang') || 'zh';
+
+    function applyLang(lang) {
+      curLang = lang;
+      const d = dict[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (d[k]) {
+          if (el.tagName === 'TITLE' || el.tagName === 'META') el.setAttribute(el.tagName === 'TITLE' ? 'text' : 'content', d[k]);
+          else el.innerHTML = d[k];
+        }
+      });
+      document.getElementById('curLang').textContent = langNames[lang];
+      localStorage.setItem('art_lang', lang);
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+    }
+    function cycleLang() {
+      const i = langs.indexOf(curLang);
+      applyLang(langs[(i+1) % 4]);
+    }
+    applyLang(curLang);
+  </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>技术文章 - Apex Engine 顶峰引擎</title>
+  <meta name="description" content="Apex Engine 技术笔记：高频撮合引擎架构、冷钱包归集工程、镜像做市算法的实战经验。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #000;
+      color: #f5f5f7;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.01em;
+    }
+    a { color: #2997ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .bg-video-container { position: fixed; inset: 0; z-index: -30; overflow: hidden; pointer-events: none; }
+    .bg-video-container video { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: brightness(0.35) saturate(0.6); }
+    .bg-veil { position: fixed; inset: 0; z-index: -20; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%); }
+    nav {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    main { max-width: 760px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+    h1 { font-size: 48px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .lead { color: #86868b; font-size: 20px; margin-bottom: 60px; line-height: 1.5; }
+    article {
+      padding: 40px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+      border-radius: 18px;
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 8px 32px rgba(0,0,0,0.3);
+      transition: all 0.4s ease;
+    }
+    article:hover {
+      transform: translateY(-2px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 16px 48px rgba(0,0,0,0.4);
+    }
+    article .tag { font-size: 12px; color: #c9a961; margin-bottom: 12px; }
+    article h2 { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+    article h2 a { color: #f5f5f7; }
+    article p { color: #86868b; font-size: 15px; line-height: 1.6; margin-top: 12px; text-align: left; }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="bg-video-container">
+    <video autoplay loop muted playsinline preload="auto" webkit-playsinline="true" x5-video-player-type="h5" poster="../poster.jpg">
+      <source src="../background.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="bg-veil"></div>
+  <nav>
+    <a href="../index.html" class="brand">Apex <span>Engine</span></a>
+    <a href="../index.html" style="font-size:14px;">← 返回首页</a>
+  </nav>
+
+  <main>
+    <h1>技术文章</h1>
+    <p class="lead">关于撮合引擎、链上钱包、做市算法的工程笔记。</p>
+
+    <article>
+      <div class="tag">撮合引擎</div>
+      <h2><a href="01-matching-engine.html">为什么高频撮合必须用 C++ 内存级架构？</a></h2>
+      <p>从 GC 停顿、内存账本、TPS 上限三个角度，拆解为什么万级并发交易所的撮合层不能用 Java 或 Go。</p>
+    </article>
+
+    <article>
+      <div class="tag">链上安全</div>
+      <h2><a href="02-cold-wallet.html">TRC20 / ERC20 冷钱包归集的 7 个工程细节</a></h2>
+      <p>独立充值地址、能量优化、RPC 冗余、大额阈值、私钥分片——资产安全的最后一道防线怎么搭。</p>
+    </article>
+
+    <article>
+      <div class="tag">做市算法</div>
+      <h2><a href="03-market-making.html">做市工具与公开行情深度：冷启动怎么配？</a></h2>
+      <p>公开行情深度对接、做市参数与风控配置——新盘冷启动时的三个关键项（以合同为准）。</p>
+    </article>
+
+    <article>
+      <div class="tag">成本指南</div>
+      <h2><a href="04-exchange-source-guide.html">交易所源码搭建完全指南：2026 年开一个交易所要多少钱？</a></h2>
+      <p>白标 vs 全定制成本对比、五套系统选型（含授权储蓄）、撮合引擎技术栈、资金链路安全、买源码前必问的 5 个问题。</p>
+    </article>
+
+    <article>
+      <div class="tag">秒合约</div>
+      <h2><a href="05-binary-options-source.html">秒合约源码完整拆解：180/240/360 秒系统怎么选？</a></h2>
+      <p>秒合约模块清单、时间档位选择、风控参数与 ops console、公开价详询。</p>
+    </article>
+
+    <article>
+      <div class="tag">永续合约</div>
+      <h2><a href="06-perpetual-source.html">永续合约源码核心模块：资金费率、爆仓、标记价格</a></h2>
+      <p>Funding Rate 计算、Liquidation 逻辑、Insurance Fund、与秒合约的本质区别。</p>
+    </article>
+
+    <article>
+      <div class="tag">微盘</div>
+      <h2><a href="07-forex-micro.html">外汇微盘系统搭建指南：黄金原油微盘源码多少钱？</a></h2>
+      <p>微盘 vs 秒合约区别、主流交易对、风控参数与做市工具、公开价详询。</p>
+    </article>
+
+    <article>
+      <div class="tag">机构席位</div>
+      <h2><a href="08-institutional-desk-delivery.html">机构席位交付说明：ops console / 源码交付 / 私有化部署</a></h2>
+      <p>多席位后台、风控参数、做市工具、源码交付与私有化部署。公开价详询。</p>
+    </article>
+
+    <article>
+      <div class="tag">币币</div>
+      <h2><a href="09-spot-exchange-source.html">币币交易所源码完整拆解：数字资产交易平台怎么搭？</a></h2>
+      <p>7 个核心模块、币币 vs 秒合约 vs 永续、成本与交付。</p>
+    </article>
+
+    <article>
+      <div class="tag">选型</div>
+      <h2><a href="10-white-label-vs-source.html">白标交易所系统 vs 源码交付：哪个更适合你？</a></h2>
+      <p>月租 vs 买断、控制权、资金安全、厂商失联风险。</p>
+    </article>
+
+    <article>
+      <div class="tag">运维</div>
+      <h2><a href="11-docker-deployment.html">交易所 Docker 部署与运维：48 小时上线后怎么管？</a></h2>
+      <p>服务器配置、Docker Compose、日常运维、备份策略。</p>
+    </article>
+  </main>
+
+  <footer>© Apex Engine · <a href="https://t.me/ApexEngine_ts" target="_blank">@ApexEngine_ts</a></footer>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>秒合约源码完整拆解：180 秒/240 秒/360 秒系统怎么选？ | Apex Engine</title>
+  <meta name="description" content="秒合约源码包含哪些模块？180 秒/240 秒/360 秒买涨买跌系统的成本、技术栈、风控参数与做市、行情工具一篇讲透（以合同为准）。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/05-binary-options-source.html">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #000; color: #f5f5f7; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    .bg-video-container { position: fixed; inset: 0; z-index: -30; overflow: hidden; pointer-events: none; }
+    .bg-video-container video { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: brightness(0.35) saturate(0.6); }
+    .bg-veil { position: fixed; inset: 0; z-index: -20; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%); }
+    nav { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); background: rgba(0,0,0,0.4); }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    main { max-width: 760px; margin: 0 auto; padding: 80px 24px; }
+    h1 { font-size: 38px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 20px; line-height: 1.2; }
+    h2 { font-size: 24px; font-weight: 600; margin-top: 44px; margin-bottom: 14px; }
+    p { color: #d1d1d6; font-size: 16px; margin-bottom: 16px; }
+    .lead { color: #86868b; font-size: 18px; margin-bottom: 36px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 14px; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { color: #c9a961; }
+    .glass { background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid rgba(255,255,255,0.08); }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 80px; }
+    a { color: #c9a961; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="bg-video-container"><video autoplay loop muted playsinline webkit-playsinline="true" poster="../poster.jpg"><source src="../background.mp4" type="video/mp4"></video></div>
+  <div class="bg-veil"></div>
+  <nav><a href="../index.html" class="brand">Apex <span>Engine</span></a><div style="display:flex;gap:12px;align-items:center;"><div onclick="toggleLang()" style="padding:8px 14px;border-radius:980px;background:rgba(255,255,255,0.08);cursor:pointer;font-size:13px;">🌐 <span id="cl">中文</span></div><a href="../index.html" style="font-size:14px; color:#86868b;">← Home</a></div></nav>
+  <main>
+    <h1>秒合约源码完整拆解：180 秒/240 秒/360 秒系统怎么选？</h1>
+    <p class="lead">买秒合约源码前，你需要知道的模块清单、成本和风控逻辑。</p>
+
+    <p>秒合约（Binary Options / 短线决胜）是交易所里流水最快的品类。用户 180 秒内买涨买跌，胜负立判。这篇文章拆解一套完整的<strong>秒合约源码</strong>到底包含什么模块、交付形态，以及 ops console / 风控参数 / 做市与行情工具（以合同为准）。公开价详询。</p>
+
+    <h2>一、秒合约源码包含哪些模块？</h2>
+    <table>
+      <tr><th>模块</th><th>功能</th><th>必备？</th></tr>
+      <tr><td>前端 H5 / APP</td><td>K 线、买涨买跌按钮、倒计时</td><td>必备</td></tr>
+      <tr><td>Admin 后台</td><td>用户管理、订单查询、风控参数</td><td>必备</td></tr>
+      <tr><td>风控参数</td><td>可配置风控与账户策略（以合同为准）</td><td>核心</td></tr>
+      <tr><td>做市与行情工具</td><td>行情与做市参数可配置（以合同为准）</td><td>必备</td></tr>
+      <tr><td>OTP 验证</td><td>注册/登录二次验证</td><td>推荐</td></tr>
+      <tr><td>国际短信</td><td>海外用户验证码</td><td>推荐</td></tr>
+      <tr><td>返佣系统</td><td>团队分层分润</td><td>可选</td></tr>
+    </table>
+
+    <h2>二、180 秒 / 240 秒 / 360 秒怎么选？</h2>
+    <div class="glass">
+      <p><strong>180 秒（3 分钟）：</strong>流水最快，用户决策冲动最强，适合快打快收。但用户留存低，进来就玩完就走。</p>
+      <p><strong>240 秒（4 分钟）：</strong>平衡型，用户有思考时间，留存略好，是大多数盘口的默认值。</p>
+      <p><strong>360 秒（6 分钟）：</strong>偏专业，用户更像在做交易判断，客单价高但转化率低。</p>
+    </div>
+    <p>正经的<strong>秒合约搭建</strong>一般三档时间都开放，后台可配置每档赔率与风控参数（以合同为准）。</p>
+
+    <h2>三、风控参数与 ops console</h2>
+    <p>秒合约交付通常包含可配置的运维能力（以合同为准）：</p>
+    <p>- <strong>风控参数：</strong>账户与交易相关阈值可配置<br>
+    - <strong>做市与行情工具：</strong>对接公开行情深度，参数可配置<br>
+    - <strong>ops console：</strong>用户、订单、资金与日志的统一运维视图<br>
+    - <strong>审计与权限：</strong>角色权限与操作日志便于交接与审计</p>
+
+    <h2>四、成本与交付周期</h2>
+    <table>
+      <tr><th>方案</th><th>价格</th><th>交付</th></tr>
+      <tr><td>纯秒合约 H5</td><td>公开价详询</td><td>24 小时</td></tr>
+      <tr><td>秒合约 + 永续 + 币币</td><td>公开价详询</td><td>48 小时</td></tr>
+      <tr><td>秒合约 + APP + 做市机器人</td><td>公开价详询</td><td>48 小时</td></tr>
+    </table>
+
+    <h2>常见问题</h2>
+    <p><strong>Q：秒合约源码是 PHP 还是 Java？</strong><br>
+    后台 Java/Go，前端 Vue/uni-app。PHP 写的秒合约并发撑不过 500 人在线。</p>
+    <p><strong>Q：带 K 线生成器吗？</strong><br>
+    必须带。没有自主 K 线生成器的秒合约系统就是死盘。</p>
+    <p><strong>Q：能二次开发吗？</strong><br>
+    100% 源码物理交付，无加密，普通 Java 工程师可接手。</p>
+
+    <p style="margin-top: 40px; text-align: center;">
+      <a href="https://t.me/ApexEngine_ts" target="_blank" style="display: inline-block; background: #fff; color: #000; padding: 14px 32px; border-radius: 980px; font-weight: 500;">获取秒合约源码演示</a>
+    </p>
+  </main>
+  <footer>© 2026 Apex Engine · v3.7</footer>
+              <script>
+    const en = {
+  "秒合约源码完整拆解：180 秒/240 秒/360 秒系统怎么选？": "Binary Options Source Code: 180s / 240s / 360s Systems Explained",
+  "一、秒合约源码包含哪些模块？": "1. What Modules Are Included?",
+  "二、180 秒 / 240 秒 / 360 秒怎么选？": "2. 180s / 240s / 360s - Which One?",
+  "三、风控参数与 ops console": "3. Risk Parameters & Ops Console",
+  "四、成本与交付周期": "4. Cost & Delivery",
+  "常见问题": "FAQ",
+  "买秒合约源码前，你需要知道的模块清单、成本和风控逻辑。": "Module checklist, cost, and risk logic before buying binary options source.",
+  "秒合约（Binary Options / 短线决胜）是交易所里流水最快的品类。用户 180 秒内买涨买跌，胜负立判。这篇文章拆解一套完整的秒合约源码到底包含什么模块、交付形态，以及 ops console / 风控参数 / 做市与行情工具（以合同为准）。公开价详询。": "Binary options are a high-turnover short-cycle product. This article covers modules, delivery form, and ops console / risk parameters / market & MM tools (per contract). Price on inquiry.",
+  "180 秒（3 分钟）：": "180s (3 min): ",
+  "流水最快，用户决策冲动最强，适合快打快收。但用户留存低，进来就玩完就走。": "Fastest flow and strongest impulse, but low retention - players come and go.",
+  "240 秒（4 分钟）：": "240s (4 min): ",
+  "平衡型，用户有思考时间，留存略好，是大多数盘口的默认值。": "Balanced: users think, retention is better. The default for most platforms.",
+  "360 秒（6 分钟）：": "360s (6 min): ",
+  "偏专业，用户更像在做交易判断，客单价高但转化率低。": "More professional: real trading decisions, higher ticket but lower conversion.",
+  "正经的秒合约搭建一般三档时间都开放，后台可配置每档赔率与风控参数（以合同为准）。": "Platforms typically open all three tiers; odds and risk parameters are configurable in admin (per contract).",
+  "秒合约交付通常包含可配置的运维能力（以合同为准）：": "Binary delivery typically includes configurable ops capabilities (per contract):",
+  "风控参数：": "Risk parameters: ",
+  "账户与交易相关阈值可配置": "Account and trading thresholds are configurable",
+  "做市与行情工具：": "Market & market-data tools: ",
+  "对接公开行情深度，参数可配置": "Connect to public market depth; parameters configurable",
+  "ops console：": "Ops console: ",
+  "用户、订单、资金与日志的统一运维视图": "Unified ops view for users, orders, funds, and logs",
+  "审计与权限：": "Audit & permissions: ",
+  "角色权限与操作日志便于交接与审计": "Role permissions and audit logs for handover",
+  "模块": "Module",
+  "功能": "Function",
+  "必备？": "Required?",
+  "前端 H5 / APP": "Frontend H5 / APP",
+  "K 线、买涨买跌按钮、倒计时": "K-line, up/down buttons, countdown",
+  "必备": "Required",
+  "Admin 后台": "Admin Panel",
+  "用户管理、订单查询、风控参数": "User mgmt, orders, risk params",
+  "风控参数": "Risk Parameters",
+  "可配置风控与账户策略（以合同为准）": "Configurable risk and account policy (per contract)",
+  "核心": "Core",
+  "做市与行情工具": "Market & MM Tools",
+  "行情与做市参数可配置（以合同为准）": "Market data and MM parameters configurable (per contract)",
+  "OTP 验证": "OTP",
+  "注册/登录二次验证": "2FA for registration/login",
+  "推荐": "Recommended",
+  "国际短信": "SMS Verification",
+  "海外用户验证码": "Overseas verification codes",
+  "返佣系统": "Referral System",
+  "团队分层分润": "Multi-tier commissions",
+  "可选": "Optional",
+  "方案": "Option",
+  "价格": "Price",
+  "交付": "Delivery",
+  "纯秒合约 H5": "Binary H5 only",
+  "公开价详询": "Price on inquiry",
+  "24 小时": "24 hrs",
+  "秒合约 + 永续 + 币币": "Binary + Perp + Spot",
+  "公开价详询": "Price on inquiry",
+  "48 小时": "48 hrs",
+  "秒合约 + APP + 做市机器人": "Binary + APP + Bots",
+  "公开价详询": "Price on inquiry",
+  "Q：秒合约源码是 PHP 还是 Java？": "Q: PHP or Java?",
+  "后台 Java/Go，前端 Vue/uni-app。PHP 写的秒合约并发撑不过 500 人在线。": "Backend Java/Go, frontend Vue/uni-app. PHP cannot handle 500+ concurrent users.",
+  "Q：带 K 线生成器吗？": "Q: K-line generator included?",
+  "必须带。没有自主 K 线生成器的秒合约系统就是死盘。": "Required. Without it, the platform is dead.",
+  "Q：能二次开发吗？": "Q: Can I customize?",
+  "100% 源码物理交付，无加密，普通 Java 工程师可接手。": "100% physical source delivery, no encryption. Any Java engineer can maintain.",
+  "获取秒合约源码演示": "Get Binary Options Source Demo",
+  "秒合约源码": "binary options source",
+  "秒合约搭建": "binary platform setup",
+  "到底包含什么模块、交付形态，以及 ops console / 风控参数 / 做市与行情工具（以合同为准）。公开价详询。": "Modules, delivery form, and ops console / risk parameters / market & MM tools (per contract). Price on inquiry.",
+  "一般三档时间都开放，后台可配置每档赔率与风控参数（以合同为准）。": "All three tiers are open; odds and risk parameters configurable in admin (per contract)."
+};
+    let enMode = localStorage.getItem('art_en') === '1';
+    function applyLang(m) {
+      document.getElementById('cl').textContent = m ? 'EN' : '中文';
+      if (!m) { location.reload(); return; }
+      const walk = el => {
+        const full = el.textContent.trim();
+        if (el.tagName !== 'MAIN' && el.tagName !== 'BODY' && !el.querySelector('a') && full && en[full]) {
+          el.innerHTML = en[full];
+          return;
+        }
+        [...el.childNodes].forEach(node => {
+          if (node.nodeType === 3) {
+            const t = node.textContent;
+            const ts = t.trim();
+            if (ts && en[ts]) { node.textContent = t.replace(ts, en[ts]); return; }
+            if (t.includes('\n')) {
+              node.textContent = t.split('\n').map(ln => {
+                const s = ln.trim();
+                return s && en[s] ? ln.replace(s, en[s]) : ln;
+              }).join('\n');
+            }
+          } else if (node.nodeType === 1 && !/^(SCRIPT|STYLE)$/.test(node.tagName)) walk(node);
+        });
+      };
+      walk(document.querySelector('main') || document.body);
+    }
+    function toggleLang() {
+      enMode = !enMode;
+      localStorage.setItem('art_en', enMode ? '1' : '0');
+      applyLang(enMode);
+    }
+    applyLang(enMode);
+  </script>
+</body>
+</html>

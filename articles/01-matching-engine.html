@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>为什么高频撮合必须用 C++ 内存级架构？ - Apex Engine</title>
+  <meta name="description" content="撮合引擎是交易所核心组件。本文从 GC 停顿、内存账本、TPS 上限三个角度解释，为什么万级并发交易所的撮合层必须用 C++/Rust，而不能用 Java 或 Go。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/01-matching-engine.html">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "为什么高频撮合必须用 C++ 内存级架构？",
+    "author": { "@type": "Organization", "name": "Apex Engine" },
+    "publisher": { "@type": "Organization", "name": "Apex Engine" },
+    "description": "从 GC 停顿、内存账本、TPS 上限三个角度解释高频撮合引擎为什么必须用 C++。"
+  }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #000; color: #f5f5f7;
+      -webkit-font-smoothing: antialiased; letter-spacing: -0.01em;
+      line-height: 1.7;
+    }
+    a { color: #2997ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    nav { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    main { max-width: 760px; margin: 0 auto; padding: 60px 24px; }
+    .tag { font-size: 12px; color: #c9a961; margin-bottom: 12px; }
+    h1 { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 24px; }
+    h2 { font-size: 24px; font-weight: 600; margin: 40px 0 16px; }
+    p { color: #d1d1d6; font-size: 17px; margin-bottom: 16px; }
+    strong { color: #fff; }
+    ul, ol { margin: 0 0 20px 24px; color: #d1d1d6; font-size: 17px; }
+    li { margin-bottom: 8px; }
+    .back { display: inline-block; margin-bottom: 32px; font-size: 14px; }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="../index.html" class="brand">Apex <span>Engine</span></a>
+    <a href="index.html">← 文章列表</a>
+  </nav>
+
+  <main>
+    <a href="index.html" class="back">← 所有文章</a>
+    <div class="tag">撮合引擎 · 2026</div>
+    <h1>为什么高频撮合必须用 C++ 内存级架构？</h1>
+
+    <p><strong>撮合引擎</strong>是交易所的核心组件，负责将买单和卖单按照"价格优先、时间优先"的原则配对成交。它的性能直接决定了交易所的延迟、滑点和并发上限。</p>
+
+    <p>在万级 TPS 场景下，使用 Java 或 Go 这类带垃圾回收（GC）的语言会产生 5–200ms 的不可预测停顿，直接导致订单簿卡顿和用户滑点。这也是为什么头部交易所的撮合层普遍使用 C++ 或 Rust。</p>
+
+    <h2>三个关键数字</h2>
+    <ol>
+      <li><strong>单节点 10,000+ TPS</strong>——C++ 内存撮合的吞吐下限。Go 在同等硬件下通常只能达到 2,000–3,000 TPS。</li>
+      <li><strong>微秒级清算延迟</strong>——订单簿完全驻留内存，不触碰磁盘，端到端延迟低于 1ms。</li>
+      <li><strong>0 GC 停顿</strong>——预分配内存池，运行时不触发垃圾回收，避免周期性卡顿。</li>
+    </ol>
+
+    <h2>为什么不能用 Java 或 Go？</h2>
+    <p>Java 和 Go 在业务层（用户中心、订单管理、API 网关）完全够用，但撮合层有两个硬约束：</p>
+    <ul>
+      <li><strong>确定性延迟</strong>：GC 会在任意时刻暂停线程，延迟抖动不可控，对做市商和高频用户来说是致命的。</li>
+      <li><strong>内存吞吐</strong>：订单簿每秒需要处理上万次插入、删除、更新，GC 的对象扫描开销会显著降低吞吐。</li>
+    </ul>
+
+    <h2>结论</h2>
+    <p>高并发交易所的撮合层必须使用 C++ 或 Rust，业务层可以用 Go 或 Java。这也是 Apex Engine 选择自研 C++/Go 混合架构、而不是基于开源项目魔改的根本原因——开源项目的撮合内核往往是单线程、低性能的，无法支撑万级并发。</p>
+
+    <p style="margin-top:40px;"><a href="https://t.me/ApexEngine_ts" target="_blank">咨询撮合引擎源码 →</a></p>
+  </main>
+
+  <footer>© Apex Engine · <a href="https://t.me/ApexEngine_ts" target="_blank">@ApexEngine_ts</a></footer>
+</body>
+</html>

@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>白标交易所系统 vs 源码交付：哪个更适合你？ | Apex Engine</title>
+  <meta name="description" content="白标交易所系统和源码交付的区别：成本、控制权、二次开发、长期成本对比。">
+  <link rel="canonical" href="https://apexenginesoft.com/articles/10-white-label-vs-source.html">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #000; color: #f5f5f7; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    .bg-video-container { position: fixed; inset: 0; z-index: -30; overflow: hidden; pointer-events: none; }
+    .bg-video-container video { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: brightness(0.35) saturate(0.6); }
+    .bg-veil { position: fixed; inset: 0; z-index: -20; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%); }
+    nav { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); background: rgba(0,0,0,0.4); }
+    nav .brand { color: #f5f5f7; font-weight: 600; font-size: 17px; }
+    nav .brand span { color: #c9a961; }
+    main { max-width: 760px; margin: 0 auto; padding: 80px 24px; }
+    h1 { font-size: 38px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 20px; line-height: 1.2; }
+    h2 { font-size: 24px; font-weight: 600; margin-top: 44px; margin-bottom: 14px; }
+    p { color: #d1d1d6; font-size: 16px; margin-bottom: 16px; }
+    .lead { color: #86868b; font-size: 18px; margin-bottom: 36px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 14px; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { color: #c9a961; }
+    .glass { background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid rgba(255,255,255,0.08); }
+    .related { margin-top: 48px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .related h3 { font-size: 16px; margin-bottom: 12px; color: #c9a961; }
+    .related a { display: block; color: #d1d1d6; padding: 6px 0; font-size: 14px; }
+    footer { text-align: center; padding: 40px; color: #6e6e73; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 80px; }
+    a { color: #c9a961; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="bg-video-container"><video autoplay loop muted playsinline webkit-playsinline="true" poster="../poster.jpg"><source src="../background.mp4" type="video/mp4"></video></div>
+  <div class="bg-veil"></div>
+  <nav><a href="../index.html" class="brand">Apex <span>Engine</span></a><div style="display:flex;gap:12px;align-items:center;"><div onclick="toggleLang()" style="padding:8px 14px;border-radius:980px;background:rgba(255,255,255,0.08);cursor:pointer;font-size:13px;">🌐 <span id="cl">中文</span></div><a href="../index.html" style="font-size:14px; color:#86868b;">← Home</a></div></nav>
+  <main>
+    <h1>白标交易所系统 vs 源码交付</h1>
+    <p class="lead">白标每月交钱受制于人，源码一次买断永久自主。怎么选？</p>
+
+    <p>刚入行的运营方经常搞不清<strong>白标交易所系统</strong>和<strong>源码交付</strong>的区别。简单说：白标是"租房"，源码是"买房"。这篇把两种模式的真实成本、控制权、风险全部拆开。</p>
+
+    <h2>一、核心区别对比</h2>
+    <table>
+      <tr><th>维度</th><th>白标（SaaS）</th><th>源码交付</th></tr>
+      <tr><td>付费方式</td><td>公开价详询（订阅）</td><td>公开价详询（买断）</td></tr>
+      <tr><td>源码归属</td><td>不归你</td><td>100% 归你</td></tr>
+      <tr><td>服务器</td><td>在厂商服务器</td><td>你自己的服务器</td></tr>
+      <tr><td>资金</td><td>过厂商钱包</td><td>直穿你的冷钱包</td></tr>
+      <tr><td>二次开发</td><td>不允许</td><td>完全自由</td></tr>
+      <tr><td>厂商失联</td><td>全站停摆</td><td>照常运营</td></tr>
+      <tr><td>抽成</td><td>部分厂商流水抽成</td><td>零抽成</td></tr>
+    </table>
+
+    <h2>二、白标适合谁？</h2>
+    <div class="glass">
+      <p>白标适合刚试水、月流水不大、不想管技术的小团队。订阅制由厂商部署维护，公开价详询；但持续付费后代码仍归属厂商。</p>
+    </div>
+
+    <h2>三、源码交付适合谁？</h2>
+    <p>只要你打算长期做、流水过百万、或者对资金安全有要求——<strong>源码交付</strong>是唯一选择。一次买断，代码在你自己服务器，资金在你自己冷钱包，厂商失联你照常运营。</p>
+
+    <h2>四、为什么我们只做源码交付？</h2>
+    <p>Apex Engine 从 2018 年起只做 100% 纯源码物理交付。不租 license、不抽成、不回连。你拿到的是全部代码，普通后端工程师就能接手维护。</p>
+
+    <div class="related">
+      <h3>相关阅读</h3>
+      <a href="04-exchange-source-guide.html">→ 交易所源码搭建完全指南：要多少钱？</a>
+      <a href="09-spot-exchange-source.html">→ 币币交易所源码完整拆解</a>
+      <a href="08-institutional-desk-delivery.html">→ 机构席位交付说明</a>
+    </div>
+
+    <p style="margin-top: 40px; text-align: center;">
+      <a href="https://t.me/ApexEngine_ts" target="_blank" style="display: inline-block; background: #fff; color: #000; padding: 14px 32px; border-radius: 980px; font-weight: 500;">详询</a>
+    </p>
+  </main>
+  <footer>© 2026 Apex Engine · v3.7</footer>
+              <script>
+    const en = {
+  "白标交易所系统 vs 源码交付": "White Label Exchange vs Source Code Delivery",
+  "一、核心区别对比": "1. Core Differences",
+  "二、白标适合谁？": "2. Who Should Pick White Label?",
+  "三、源码交付适合谁？": "3. Who Should Pick Source Code?",
+  "四、为什么我们只做源码交付？": "4. Why We Only Deliver Source",
+  "相关阅读": "Related Reading",
+  "白标每月交钱受制于人，源码一次买断永久自主。怎么选？": "White label: monthly fees, vendor lock-in. Source: one-time, fully yours. How to choose?",
+  "刚入行的运营方经常搞不清白标交易所系统和源码交付的区别。简单说：白标是\"租房\"，源码是\"买房\"。这篇把两种模式的真实成本、控制权、风险全部拆开。": "New operators often confuse white label with source delivery. Simply: white label is renting, source code is buying. This article breaks down real cost, control, and risk of both.",
+  "白标适合刚试水、月流水不大、不想管技术的小团队。订阅制由厂商部署维护，公开价详询；但持续付费后代码仍归属厂商。": "White label suits small teams testing the waters: vendor-managed subscription, price on inquiry; ongoing fees, code stays with the vendor.",
+  "只要你打算长期做、流水过百万、或者对资金安全有要求——源码交付是唯一选择。一次买断，代码在你自己服务器，资金在你自己冷钱包，厂商失联你照常运营。": "If you plan long-term, move over a million in volume, or care about fund security - source is the only choice. One-time purchase, code on your server, funds in your cold wallet, operations continue even if the vendor disappears.",
+  "Apex Engine 从 2018 年起只做 100% 纯源码物理交付。不租 license、不抽成、不回连。你拿到的是全部代码，普通后端工程师就能接手维护。": "Apex Engine has delivered 100% pure physical source since 2018. No license, no revenue share, no callbacks. You get everything; any backend engineer can maintain it.",
+  "详询": "Inquire",
+  "白标交易所系统": "white label exchange system",
+  "源码交付": "source code delivery",
+  "维度": "Dimension",
+  "白标（SaaS）": "White Label (SaaS)",
+  "付费方式": "Pricing",
+  "公开价详询（订阅）": "Price on inquiry (subscription)",
+  "公开价详询（买断）": "Price on inquiry (buyout)",
+  "源码归属": "Ownership",
+  "不归你": "Not yours",
+  "100% 归你": "100% yours",
+  "服务器": "Server",
+  "在厂商服务器": "Vendor's server",
+  "你自己的服务器": "Your own server",
+  "资金": "Funds",
+  "过厂商钱包": "Through vendor wallet",
+  "直穿你的冷钱包": "Direct to your cold wallet",
+  "二次开发": "Customization",
+  "不允许": "Not allowed",
+  "完全自由": "Fully free",
+  "厂商失联": "Vendor disappears",
+  "全站停摆": "Platform halts",
+  "照常运营": "Keep running",
+  "抽成": "Revenue share",
+  "部分厂商流水抽成": "Some vendors take a cut",
+  "零抽成": "Zero",
+  "→ 交易所源码搭建完全指南：要多少钱？": "-> Exchange Source Guide: How Much?",
+  "→ 币币交易所源码完整拆解": "-> Spot Exchange Source Explained",
+  "→ 机构席位交付说明": "-> Institutional Desk Delivery"
+};
+    let enMode = localStorage.getItem('art_en') === '1';
+    function applyLang(m) {
+      document.getElementById('cl').textContent = m ? 'EN' : '中文';
+      if (!m) { location.reload(); return; }
+      const walk = el => {
+        const full = el.textContent.trim();
+        if (el.tagName !== 'MAIN' && el.tagName !== 'BODY' && !el.querySelector('a') && full && en[full]) {
+          el.innerHTML = en[full];
+          return;
+        }
+        [...el.childNodes].forEach(node => {
+          if (node.nodeType === 3) {
+            const t = node.textContent;
+            const ts = t.trim();
+            if (ts && en[ts]) { node.textContent = t.replace(ts, en[ts]); return; }
+            if (t.includes('\n')) {
+              node.textContent = t.split('\n').map(ln => {
+                const s = ln.trim();
+                return s && en[s] ? ln.replace(s, en[s]) : ln;
+              }).join('\n');
+            }
+          } else if (node.nodeType === 1 && !/^(SCRIPT|STYLE)$/.test(node.tagName)) walk(node);
+        });
+      };
+      walk(document.querySelector('main') || document.body);
+    }
+    function toggleLang() {
+      enMode = !enMode;
+      localStorage.setItem('art_en', enMode ? '1' : '0');
+      applyLang(enMode);
+    }
+    applyLang(enMode);
+  </script>
+</body>
+</html>
