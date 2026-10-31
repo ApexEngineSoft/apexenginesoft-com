@@ -178,11 +178,15 @@
       left: 50%;
       /* 钉在 A&E 圆环下方；片内%不随视口裁切漂移 */
       top: 46%;
-      transform: translateX(-50%);
-      /* 420px 在桌面会把「金融交易系统。」折成「系/统」偏左；加宽 + 防断行 */
+      /* 烧录 A&E 的 & 不在片心（情报实测偏右）；标题追随 & 轴，不动片 */
+      --ae-nudge-x: 12px;
+      transform: translateX(calc(-50% + var(--ae-nudge-x)));
       width: min(92%, 720px);
       text-align: center;
       pointer-events: auto;
+    }
+    @media (min-width: 768px) {
+      .hero-stack { --ae-nudge-x: 34px; }
     }
     .hero-title {
       display: flex;
