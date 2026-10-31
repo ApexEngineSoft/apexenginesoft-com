@@ -179,7 +179,8 @@
       /* 钉在 A&E 圆环下方；片内%不随视口裁切漂移 */
       top: 46%;
       transform: translateX(-50%);
-      width: min(92%, 420px);
+      /* 420px 在桌面会把「金融交易系统。」折成「系/统」偏左；加宽 + 防断行 */
+      width: min(92%, 720px);
       text-align: center;
       pointer-events: auto;
     }
@@ -195,12 +196,26 @@
       line-height: 1.1;
       letter-spacing: 0.02em;
     }
+    .hero-title__l1,
+    .hero-title__l2 {
+      white-space: nowrap;
+    }
     .hero-title__l2 {
       background: linear-gradient(180deg, #fff, #c9b98a);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: normal;
+    }
+    /* 桌面：整块居中，避免换行短行偏左脱中线（情报 1280 不过） */
+    @media (min-width: 768px) {
+      .hero-title {
+        align-items: center;
+        text-align: center;
+      }
+      .hero-section h1.hero-title {
+        font-size: clamp(36px, 3.6vw, 64px);
+      }
     }
 
     h1 {
