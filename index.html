@@ -52,13 +52,21 @@
     a:hover { text-decoration: none; color: #c9a961; }
 
     /* 背景视频 */
+    /* cover-crop 坐标系：片 1080×1920=9/16；叠层用同一舞台 % 对齐烧录 A&E
+       依据：https://stackoverflow.com/questions/73758948 （cover 视频内按片内%定位） */
     .bg-video-container {
-      position: fixed; inset: 0;
+      position: fixed;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      aspect-ratio: 9 / 16;
+      width: max(100vw, calc(100vh * 9 / 16));
+      height: max(100vh, calc(100vw * 16 / 9));
       z-index: -30; overflow: hidden;
       pointer-events: none;
     }
     .bg-video-container video {
-      width: 100%; height: 100%; object-fit: cover;
+      width: 100%; height: 100%;
+      object-fit: cover;
       object-position: center center;
       filter: brightness(0.35) saturate(0.6);
     }
@@ -150,7 +158,31 @@
     .container { max-width: 980px; margin: 0 auto; }
     .center { text-align: center; }
 
-    /* Hero 两行左缘对齐（flex + max-content，i18n 友好） */
+    /* Hero：与视频同一 cover-crop 舞台；A&E 烧录约 y=0.30–0.42 / cy≈0.33（片内实测） */
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .hero-stage {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      aspect-ratio: 9 / 16;
+      width: max(100vw, calc(100vh * 9 / 16));
+      height: max(100vh, calc(100vw * 16 / 9));
+      pointer-events: none;
+    }
+    .hero-stack {
+      position: absolute;
+      left: 50%;
+      /* 钉在 A&E 圆环下方；片内%不随视口裁切漂移 */
+      top: 46%;
+      transform: translateX(-50%);
+      width: min(92%, 420px);
+      text-align: center;
+      pointer-events: auto;
+    }
     .hero-title {
       display: flex;
       flex-direction: column;
@@ -314,14 +346,16 @@
     <a href="https://t.me/ApexEngine_ts" target="_blank" data-i18n="nav_cta">详询</a>
   </div>
 
-  <!-- HERO -->
-  <section style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 30vh; padding-bottom: 40px;">
-    <div class="container center">
-      <h1 class="hero-title"><span class="hero-title__l1" data-i18n="hero_title1">金融交易系统。</span><span class="hero-title__l2" data-i18n="hero_title2">48 小时上线。</span></h1>
-      <p class="lede" style="margin-top: 24px;"><span data-i18n="hero_sub">五套交易系统 · 源码交付 / 私有化部署。公开价详询。</span></p>
-      <div style="margin-top: 32px; display: flex; gap: 32px; justify-content: center;">
-        <a href="#systems" class="link" data-i18n="hero_learn">了解系统</a>
-        <a href="https://t.me/ApexEngine_ts" target="_blank" class="link" data-i18n="hero_consult">详询</a>
+  <!-- HERO：与 bg-video 同 cover-crop 舞台，标题按片内%钉在 A&E 下 -->
+  <section class="hero-section">
+    <div class="hero-stage">
+      <div class="hero-stack">
+        <h1 class="hero-title"><span class="hero-title__l1" data-i18n="hero_title1">金融交易系统。</span><span class="hero-title__l2" data-i18n="hero_title2">48 小时上线。</span></h1>
+        <p class="lede" style="margin-top: 24px;"><span data-i18n="hero_sub">五套交易系统 · 源码交付 / 私有化部署。公开价详询。</span></p>
+        <div style="margin-top: 32px; display: flex; gap: 32px; justify-content: center;">
+          <a href="#systems" class="link" data-i18n="hero_learn">了解系统</a>
+          <a href="https://t.me/ApexEngine_ts" target="_blank" class="link" data-i18n="hero_consult">详询</a>
+        </div>
       </div>
     </div>
   </section>
