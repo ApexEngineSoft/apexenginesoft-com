@@ -150,6 +150,27 @@
     .container { max-width: 980px; margin: 0 auto; }
     .center { text-align: center; }
 
+    /* Hero 两行左缘对齐（flex + max-content，i18n 友好） */
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: max-content;
+      max-width: 100%;
+      margin-inline: auto;
+      text-align: left;
+      gap: 0.08em;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+    .hero-title__l2 {
+      background: linear-gradient(180deg, #fff, #c9b98a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: normal;
+    }
+
     h1 {
       font-size: clamp(40px, 8vw, 80px);
       font-weight: 600;
@@ -296,7 +317,7 @@
   <!-- HERO -->
   <section style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 30vh; padding-bottom: 40px;">
     <div class="container center">
-      <h1 data-i18n="hero_title1">金融交易系统。<br><span style="background: linear-gradient(180deg,#fff,#c9b98a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"><span data-i18n="hero_title2">48 小时上线。</span></h1>
+      <h1 class="hero-title"><span class="hero-title__l1" data-i18n="hero_title1">金融交易系统。</span><span class="hero-title__l2" data-i18n="hero_title2">48 小时上线。</span></h1>
       <p class="lede" style="margin-top: 24px;"><span data-i18n="hero_sub">五套交易系统 · 源码交付 / 私有化部署。公开价详询。</span></p>
       <div style="margin-top: 32px; display: flex; gap: 32px; justify-content: center;">
         <a href="#systems" class="link" data-i18n="hero_learn">了解系统</a>
