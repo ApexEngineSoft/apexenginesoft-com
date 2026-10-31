@@ -204,13 +204,6 @@
     .hero-title__l2 {
       white-space: nowrap;
     }
-    /* 句号悬挂：布局宽不含。，墨心对六字/主句，追随 & 轴（情报 B） */
-    .hero-title__dot {
-      display: inline-block;
-      width: 0;
-      overflow: visible;
-      white-space: nowrap;
-    }
     .hero-title__l2 {
       background: linear-gradient(180deg, #fff, #c9b98a);
       -webkit-background-clip: text;
@@ -376,7 +369,7 @@
   <section class="hero-section">
     <div class="hero-stage">
       <div class="hero-stack">
-        <h1 class="hero-title"><span class="hero-title__l1" data-i18n="hero_title1">金融交易系统<span class="hero-title__dot">。</span></span><span class="hero-title__l2" data-i18n="hero_title2">48 小时上线<span class="hero-title__dot">。</span></span></h1>
+        <h1 class="hero-title"><span class="hero-title__l1" data-i18n="hero_title1">金融交易系统。</span><span class="hero-title__l2" data-i18n="hero_title2">48 小时上线。</span></h1>
         <p class="lede" style="margin-top: 24px;"><span data-i18n="hero_sub">五套交易系统 · 源码交付 / 私有化部署。公开价详询。</span></p>
         <div style="margin-top: 32px; display: flex; gap: 32px; justify-content: center;">
           <a href="#systems" class="link" data-i18n="hero_learn">了解系统</a>
@@ -897,15 +890,6 @@
         const key = el.getAttribute('data-i18n');
         if (dict[key]) {
           if (key.startsWith('p') || key === 'about_desc') el.innerHTML = dict[key];
-          else if (key === 'hero_title1' || key === 'hero_title2') {
-            const raw = dict[key];
-            const m = raw.match(/^(.*?)([。．.\u3002!?！？])$/u);
-            const core = m ? m[1] : raw;
-            const punct = m ? m[2] : '';
-            el.innerHTML = punct
-              ? (core + '<span class="hero-title__dot">' + punct + '</span>')
-              : core;
-          }
           else el.textContent = dict[key];
         }
       });
